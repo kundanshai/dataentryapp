@@ -1,0 +1,871 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.serve.static" value="true" />	
+	<constant name="struts.multipart.maxSize" value="1048576000" /> 
+	<constant name="struts.serve.static.browserCache" value="false" />
+	<package name="default" extends="struts-default,json-default"
+		namespace="/">
+		<default-action-ref name="login" />
+		<global-results>
+			<result name="error">jsp/Error.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.IllegalStateException"
+				result="error" />
+			<exception-mapping exception="java.lang.NullPointerException"
+				result="error" />
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		<action name="login" class="com.tcs.djb.action.LoginAction">
+			<result name="none">jsp/Login.jsp</result>
+			<result name="dataEntry">jsp/DESearch.jsp</result>
+			<result name="error">jsp/Login.jsp</result>
+			<result name="success">jsp/Home.jsp</result>
+			<result name="populatelov">jsp/PopulateLOV.jsp</result>
+			<result name="changePassword">jsp/ChangePassword.jsp</result>
+			<result name="rainWater">jsp/RainWaterHarvesting.jsp</result>
+		</action>
+		<action name="home" class="com.tcs.djb.action.HomeAction">
+			<result name="none">jsp/Login.jsp</result>
+			<result name="success">jsp/Home.jsp</result>
+			<result name="dataEntry">jsp/DESearch.jsp</result>
+			<result name="error">jsp/Login.jsp</result>
+		</action>
+		<action name="search" class="com.tcs.djb.action.SearchAction">
+			<result name="success">jsp/DESearch.jsp</result>
+			<result name="error">jsp/Login.jsp</result>
+		</action>
+		<action name="dataEntry" class="com.tcs.djb.action.DataEntryAction">
+			<result name="error">jsp/DESearch.jsp</result>
+			<result name="dataEntry">jsp/DESearch.jsp</result>
+			<result name="success">jsp/SearchResult.jsp</result>
+			<result name="reload">jsp/SearchResult.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+			<result name="gotofreeze">jsp/FreezeDataEntry.jsp</result>
+		</action>
+		<action name="callHomeAJax" class="com.tcs.djb.action.DataEntryAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="freeze" class="com.tcs.djb.action.FreezeAction">
+			<result name="error">jsp/FreezeDataEntry.jsp</result>
+			<result name="entry">jsp/SearchResult.jsp</result>
+			<result name="success">jsp/FreezeDataEntry.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+			<result name="dataEntry">jsp/DESearch.jsp</result>
+		</action>
+		<action name="scheduleDownload" class="com.tcs.djb.action.MRDScheduleDownloadAction">
+			<result name="error">jsp/MRDScheduleDownload.jsp</result>
+			<result name="success">jsp/MRDScheduleDownload.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+			<result name="mandatory">jsp/MRDScheduleDownloadJobSubmit.jsp</result>
+		</action>
+		<action name="logout" class="com.tcs.djb.action.LogoutAction">
+			<result name="success">jsp/Login.jsp</result>
+			<result name="redirect" type="redirect">${url}</result>
+		</action>
+		<action name="save" class="com.tcs.djb.action.MRDDataEntryAction">
+			<result name="error">jsp/SearchResult.jsp</result>
+			<result name="success">jsp/SearchResult.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="lastOKReadCorrection" class="com.tcs.djb.action.LastOKReadCorrectionAction">
+			<result name="success">jsp/LastOKReadCorrection.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+			<result name="error">jsp/LastOKReadCorrection.jsp</result>
+		</action>
+		<action name="lastOKReadCorrectionAJax" class="com.tcs.djb.action.LastOKReadCorrectionAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="callAJax" class="com.tcs.djb.action.AjaxAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="disconnection" class="com.tcs.djb.action.DisconnectionAction">
+			<result name="error">jsp/DESearch.jsp</result>
+			<result name="success">jsp/MRDDisconnection.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="callDisconnectionAJax" class="com.tcs.djb.action.DisconnectionAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="reopening" class="com.tcs.djb.action.ReopeningAction">
+			<result name="error">jsp/DESearch.jsp</result>
+			<result name="success">jsp/MRDReopening.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="callReopeningAJax" class="com.tcs.djb.action.ReopeningAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="meterReplacement" class="com.tcs.djb.action.MeterReplacementAction">
+			<result name="error">jsp/DESearch.jsp</result>
+			<result name="success">jsp/MeterReplacement.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="callMeterReplacementAJax" class="com.tcs.djb.action.MeterReplacementAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="download" class="com.tcs.djb.action.FileDownloaderAction">
+			<result name="zip" type="stream">
+				<param name="contentType">application/zip</param>
+				<param name="inputName">fileInputStream</param>
+				<param name="contentDisposition">attachment;filename=%{fileName}</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="xls" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">fileInputStream</param>
+				<param name="contentDisposition">attachment;filename=%{fileName}</param>
+				<param name="bufferSize">1024</param>
+			</result>
+			<result name="txt" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">fileInputStream</param>
+				<param name="contentDisposition">attachment;filename=%{fileName}</param>
+				<param name="bufferSize">1024</param>
+			</result>
+			<result name="error">jsp/MRDScheduleDownload.jsp</result>
+		</action>
+		<action name="changePassword" class="com.tcs.djb.action.ChangePasswordAction">
+			<result name="error">jsp/ChangePassword.jsp</result>
+			<result name="success">jsp/ChangePassword.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="viewAppLog" class="com.tcs.djb.action.ViewAppLogAction">
+			<result name="error">jsp/ViewAppLog.jsp</result>
+			<result name="success">jsp/ViewAppLog.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="setRoleAccess" class="com.tcs.djb.action.SetRoleAccessAction">
+			<result name="error">jsp/SetRoleAccess.jsp</result>
+			<result name="success">jsp/SetRoleAccess.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="createUser" class="com.tcs.djb.action.CreateUserAction">
+			<result name="error">jsp/CreateUser.jsp</result>
+			<result name="success">jsp/CreateUser.jsp</result>
+			<result name="search">jsp/SearchUser.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="createUserAJax" class="com.tcs.djb.action.CreateUserAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="newConnectionDAF" class="com.tcs.djb.action.NewConnectionAction">
+			<result name="error">jsp/NewConnection.jsp</result>
+			<result name="success">jsp/NewConnection.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="newConnectionDAFAJax" class="com.tcs.djb.action.NewConnectionAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			Start:Added By Matiur Rahman on 25-02-2013 as per JTrac DJB-1118
+		-->
+		<action name="hhdMaintenance" class="com.tcs.djb.action.HHDMaintenanceAction">
+			<result name="error">jsp/HHDMaintenance.jsp</result>
+			<result name="success">jsp/HHDMaintenance.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="hhdMaintenanceAJax" class="com.tcs.djb.action.HHDMaintenanceAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur Rahman on 25-02-2013 as per JTrac DJB-1118 -->
+		<!--
+			Start:Added By Matiur Rahman on 01-03-2013 as per JTrac DJB-1204
+		-->
+		<action name="operationMRKeyReview" class="com.tcs.djb.action.OperationMRKeyReviewAction">
+			<result name="error">jsp/OperationMRKeyReview.jsp</result>
+			<result name="success">jsp/OperationMRKeyReview.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="operationMRKeyReviewAJax" class="com.tcs.djb.action.OperationMRKeyReviewAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur Rahman on 01-03-2013 as per JTrac DJB-1204 -->
+		<!-- Start:Added By Tuhin on 12-03-2013 as per JTrac DJB-1205 -->
+		<action name="preBillStatusDefinition" class="com.tcs.djb.action.PreBillStatusDefinitionAction">
+			<result name="error">jsp/PreBillStatusDefinition.jsp</result>
+			<result name="success">jsp/PreBillStatusDefinition.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="preBillStatusDefinitionAJax" class="com.tcs.djb.action.PreBillStatusDefinitionAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Tuhin on 12-03-2013 as per JTrac DJB-1205 -->
+		<!-- Start:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304 -->
+		<action name="meterReplacementReview" class="com.tcs.djb.action.MeterReplacementReviewAction">
+			<result name="error">jsp/MeterReplacementReview.jsp</result>
+			<result name="success">jsp/MeterReplacementReview.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="meterReplacementReviewAJax" class="com.tcs.djb.action.MeterReplacementReviewAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304 -->
+		<!-- Start:Added By Matiur on 22-04-2013 as per JTrac DJB-1423 -->
+		<action name="roleScreenMapping" class="com.tcs.djb.action.RoleScreenMappingAction">
+			<result name="error">jsp/RoleScreenMapping.jsp</result>
+			<result name="success">jsp/RoleScreenMapping.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="roleScreenMappingAJax" class="com.tcs.djb.action.RoleScreenMappingAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 22-04-2013 as per JTrac DJB-1423 -->
+		<!-- Start:Added By Matiur on 22-04-2013 as per JTrac DJB-1423 -->
+		<action name="populateLOV" class="com.tcs.djb.action.PopulateLOVAction">
+			<result name="dataEntry">jsp/DESearch.jsp</result>
+			<result name="error">jsp/Login.jsp</result>
+			<result name="success">jsp/Home.jsp</result>
+			<result name="populatelov">jsp/PopulateLOV.jsp</result>
+		</action>
+		<action name="populateLOVAJax" class="com.tcs.djb.action.PopulateLOVAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mrdScheduleDownloadJobSubmit"
+			class="com.tcs.djb.action.MRDScheduleDownloadJobSubmitAction">
+			<result name="error">jsp/MRDScheduleDownloadJobSubmit.jsp</result>
+			<result name="success">jsp/MRDScheduleDownloadJobSubmit.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+			<result name="download">jsp/MRDScheduleDownload.jsp</result>
+		</action>
+		<action name="mrdScheduleDownloadJobSubmitAJax"
+			class="com.tcs.djb.action.MRDScheduleDownloadJobSubmitAction" method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 22-04-2013 as per JTrac DJB-1423 -->
+		<!-- Start:Added By Matiur on 08-05-2013 as per JTrac DJB-553 -->
+		<action name="demandTransfer" class="com.tcs.djb.action.DemandTransferAction">
+			<result name="error">jsp/DemandTransfer.jsp</result>
+			<result name="success">jsp/DemandTransfer.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="demandTransferAJax" class="com.tcs.djb.action.DemandTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="createMRD" class="com.tcs.djb.action.CreateMRDAction">
+			<result name="error">jsp/CreateMRD.jsp</result>
+			<result name="success">jsp/CreateMRD.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="createMRDAJax" class="com.tcs.djb.action.CreateMRDAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 08-05-2013 as per JTrac DJB-553 -->
+		<!-- Start:Added By Reshma on 24-05-2013 as per JTrac DJB-1386 -->
+		<action name="renumberRouteSequences" class="com.tcs.djb.action.RenumberRouteSequencesAction">
+			<result name="error">jsp/RenumberRouteSequences.jsp</result>
+			<result name="success">jsp/RenumberRouteSequences.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="renumberRouteSequencesAJax" class="com.tcs.djb.action.RenumberRouteSequencesAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Reshma on 24-05-2013 as per JTrac DJB-1386 -->
+		<!-- Start:Added By Arnab Nandy (1227971) on 19-01-2016 as per JTrac DJB-4326 -->
+		<action name="fileNumberDetailSearch" class="com.tcs.djb.action.FileNumberDetailSearchAction">
+			<result name="error">jsp/FileNumberDetailSearch.jsp</result>
+			<result name="success">jsp/FileNumberDetailSearch.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="fileNumberDetailSearchAJax" class="com.tcs.djb.action.FileNumberDetailSearchAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Arnab Nandy (1227971) on 19-01-2016 as per JTrac DJB-4326 -->
+		<!-- Start:Added By Matiur on 10-06-2013 -->
+		<action name="changePasswordAJax" class="com.tcs.djb.action.ChangePasswordAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 10-06-2013 -->
+		<!-- Start:Added By Matiur on 28-06-2013 as per JTrac DJB-1626 -->
+		<action name="onlineBatchBilling" class="com.tcs.djb.action.OnlineBatchBillingAction">
+			<result name="error">jsp/OnlineBatchBilling.jsp</result>
+			<result name="success">jsp/OnlineBatchBilling.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="onlineBatchBillingAJax" class="com.tcs.djb.action.OnlineBatchBillingAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 28-06-2013 as per JTrac DJB-1626 -->
+		<!-- Start:Added By Mrityunjoy on 05-07-2013 as per JTrac DJB-1625 -->
+		<action name="knoBillGen" class="com.tcs.djb.action.KNOBillGenAction">
+			<result name="error">jsp/KNOBillGeneration.jsp</result>
+			<result name="success">jsp/KNOBillGeneration.jsp</result>
+		</action>
+		<action name="knoBillGenAjax" class="com.tcs.djb.action.KNOBillGenAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End :Added By Mrityunjoy on 05-07-2013 as per JTrac DJB-1625 -->
+		<!-- Start:Added By Matiur on 07-08-2013 as per JTrac DJB-1748 -->
+		<action name="hhdSynchronization" class="com.tcs.djb.action.HHDSynchronizationAction">
+			<result name="error">jsp/HHDSynchronization.jsp</result>
+			<result name="success">jsp/HHDSynchronization.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 07-08-2013 -->
+		<!-- Start:Added By Matiur on 20-09-2013 as per JTrac HHD-48 -->
+		<action name="meterReaderMaintenance" class="com.tcs.djb.action.MeterReaderMaintenanceAction">
+			<result name="error">jsp/MeterReaderMaintenance.jsp</result>
+			<result name="success">jsp/MeterReaderMaintenance.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="meterReaderMaintenanceAJax" class="com.tcs.djb.action.MeterReaderMaintenanceAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mrdTagging" class="com.tcs.djb.action.MRDTaggingAction">
+			<result name="error">jsp/MRDTagging.jsp</result>
+			<result name="success">jsp/MRDTagging.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mrdTaggingAJax" class="com.tcs.djb.action.MRDTaggingAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Matiur on 20-09-2013 as per JTrac HHD-48 -->
+		<!-- Start:Added By Karthick K on 21-10-2013 as per JTrac DJB-1758 -->
+		<action name="hhdCredentials" class="com.tcs.djb.action.HHDCredentialsAction">
+			<result name="error">jsp/HHDCredentials.jsp</result>
+			<result name="success">jsp/HHDCredentials.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="hhdCredentialsAJax" class="com.tcs.djb.action.HHDCredentialsAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+
+		<action name="addhhdCredentialsAJax" class="com.tcs.djb.action.HHDCredentialsAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			START: Commented by Matiur Rahman on 06-02-2014 as Kartick added this
+			for POC purpose and should not be Checked in VSS
+		-->
+		<!--
+			<action name="pocIpAdress"
+			class="com.tcs.djb.action.PocIpAdddressAction"> <result
+			name="error">jsp/POCipAddress.jsp</result> <result
+			name="success">jsp/POCipAddress.jsp</result> <result
+			name="login">jsp/Login.jsp</result> </action>
+		-->
+		<!--
+			END: Commented by Matiur Rahman on 06-02-2014 as Kartick added this
+			for POC purpose and should not be Checked in VSS
+		-->
+		<!-- End:Added By Karthick K on 21-10-2013 as per JTrac DJB-1758-->
+
+		<!--
+			Start:Added By Rajib Hazarika on 02-12-2013 as per JTrac DJB-2123
+		-->
+		<action name="newConnectionSearchDAF" class="com.tcs.djb.action.NewConnectionSearchAction">
+			<result name="error">jsp/NewConnectionSearch.jsp</result>
+			<result name="success">jsp/NewConnectionSearch.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="newConnectionSearchDAFAJax" class="com.tcs.djb.action.NewConnectionSearchAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- End:Added By Rajib Hazarika on 04-12-2013 as per JTrac DJB-2123 -->
+		<action name="devChargeMasterData" class="com.tcs.djb.action.DevChargeMasterDataAction">
+			<result name="error">jsp/DevChargeMasterData.jsp</result>
+			<result name="success">jsp/DevChargeMasterData.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="devChargeMasterDataAJax" class="com.tcs.djb.action.DevChargeMasterDataAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			Start:Added By Aniket Chatterjee on 02-08-2015 as per JTrac DJB-4037
+		-->
+		<action name="rainWaterHarvesting" class="com.tcs.djb.action.RainWaterHarvestingAction">
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">2097152</param>
+				<param name="allowedTypes">
+					image/png,image/gif,image/jpeg,image/pjpeg
+	        </param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="error">jsp/RainWaterHarvesting.jsp</result>
+			<result name="success">jsp/RainWaterHarvesting.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			Start:Added By Atanu Mandal on 29-12-2015 as per JTrac ANDROID-293
+		-->
+		<action name="mtrReadImgAudit" class="com.tcs.djb.action.MtrReadImgAuditAction">
+			<result name="error">jsp/MtrReadImgAudit.jsp</result>
+			<result name="success">jsp/MtrReadImgAudit.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mtrReadImgAuditAJax" class="com.tcs.djb.action.MtrReadImgAuditAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Atanu Mandal on 29-12-2015 as per JTrac ANDROID-293
+		-->
+		<!--
+			Start:Added By Madhuri Singh on 01-09-2017 as per JTrac ANDROID-388
+		-->
+		<action name="mtrReadImgAuditBillRoundAJax" class="com.tcs.djb.action.MtrReadImgAuditAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Madhuri Singh on 01-09-2017 as per JTrac ANDROID-388
+		-->
+		<!--
+			Start:Added By Atanu Mandal on 13-01-2016 as per JTrac ANDROID-293
+		-->
+		<action name="consumptionVariationAudit" class="com.tcs.djb.action.ConsumptionVariationAuditAction">
+			<result name="error">jsp/ConsumptionVariationAudit.jsp</result>
+			<result name="success">jsp/ConsumptionVariationAudit.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="consumptionVariationAuditAJax" class="com.tcs.djb.action.ConsumptionVariationAuditAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Atanu Mandal on 13-01-2016 as per JTrac ANDROID-293
+		-->
+		<!--
+			Start:Added By Atanu Mandal on 08-03-2016 as per JTrac ANDROID-293
+		-->
+		<action name="finalmSevaAudit" class="com.tcs.djb.action.FinalmSevaAuditAction">
+			<result name="error">jsp/FinalmSevaAudit.jsp</result>
+			<result name="success">jsp/FinalmSevaAudit.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="finalmSevaAuditAJax" class="com.tcs.djb.action.FinalmSevaAuditAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Atanu Mandal on 08-03-2016 as per JTrac ANDROID-293
+		-->
+		<action name="rainWaterHarvestingAJax" class="com.tcs.djb.action.RainWaterHarvestingAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Aniket Chatterjee on 02-08-2015 as per JTrac DJB-4037
+		-->		
+			<!--  Start:Added By Rajib Hazarika on 12-JAN-2016 as per JTrac DJB-4313 --> 
+		<action name="newConnFileEntry" class="com.tcs.djb.action.NewConnFileEntryAction">
+			<result name="error">jsp/NewConnFileEntry.jsp</result>
+			<result name="success">jsp/NewConnFileEntry.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="newConnFileEntryAJax" class="com.tcs.djb.action.NewConnFileEntryAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--  END:Added By Rajib Hazarika on 12-JAN-2016 as per JTrac DJB-4313 --> 
+		<!--
+			Start:Added By Diksha Mukherjee on 19-01-2016 as per JTrac DJB-4290
+		-->	
+		<!--
+			Start: Added By Arnab Nandy (1227971) on 01-06-2016 as per JTrac DJB-4425 and OpenProject-1217.
+		-->
+		<action name="dataMigrationReports" class="com.tcs.djb.action.DataMigrationReportAction">
+			<result name="error">jsp/DataMigrationReport.jsp</result>
+			<result name="success">jsp/DataMigrationReport.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="dataMigrationReportsAJax" class="com.tcs.djb.action.DataMigrationReportAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			Start: Added By Arnab Nandy (1227971) on 01-06-2016 as per JTrac DJB-4425 and OpenProject-1217.
+		-->	
+		<action name="kNOGeneration" class="com.tcs.djb.action.KnoGenerationAction">
+			<result name="error">jsp/KNOGeneration.jsp</result>
+			<result name="success">jsp/KNOGeneration.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="kNOGenerationAJax" class="com.tcs.djb.action.KnoGenerationAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			Start:Added By Lovely on 24-08-2016 as per JTrac DJB-4541 ,Open project-1443.
+		-->
+		<action name="kNOGenerationFileTaggingAJax" class="com.tcs.djb.action.KnoGenerationAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="kNOGenerationFileTaggingSavingAJax" class="com.tcs.djb.action.KnoGenerationAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Lovely on 24-08-2016 as per JTrac DJB-4541 ,Open project-1443.
+		-->
+		<!--
+			End:Added By Diksha Mukherjee on 19-01-2016s as per JTrac DJB-4290
+		-->	
+		<!--
+			Start:Added By Atanu on 02-06-2016 as per open project 1202
+		-->
+		<action name="mrdFileUpload" class="com.tcs.djb.action.MRDFileUploadAction">
+			<result name="error">jsp/MRDFileUpload.jsp</result>
+			<result name="success">jsp/MRDFileUpload.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Atanu on 02-06-2016 as per open project 1202
+		-->
+			<!--  
+		     Start:Added By Lovely on 19-04-2016 as per  JTrac DJB-4465 and OpenProject-918
+		-->
+		<action name="dataUpload" class="com.tcs.djb.action.DataUploadAction">
+			<result name="error">jsp/DataUpload.jsp</result>
+			<result name="success">jsp/DataUpload.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--  
+		    End:Added By Lovely on 19-04-2016 as per  JTrac DJB-4465 and OpenProject-918.
+		-->	
+			<!-- Start:Added By Rajib Hazarika on 29-08-2016 as per JTrac DJB-4537 fro Rocky Area/banks of Yamuna Flag updation Screen	-->
+		<action name="raybFlagUpdation" class="com.tcs.djb.action.RaybFlagUpdationAction">
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">2097152</param>
+				<param name="allowedTypes">
+					image/png,image/gif,image/jpeg,image/pjpeg
+	        </param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="error">jsp/RAYBTagging.jsp</result>
+			<result name="success">jsp/RAYBTagging.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>		
+		<action name="raybFlagUpdationAJax" class="com.tcs.djb.action.RaybFlagUpdationAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!-- END:Added By Rajib Hazarika on 29-08-2016 as per JTrac DJB-4537 fro Rocky Area/banks of Yamuna Flag updation Screen	-->			
+		<!--
+			Start:Added By Sanjay on 12-04-2016 per JTrac DJB-4442 and OpenProject-CODE DEVELOPMENT #867.
+		-->
+		<action name="fileNbrAllocation" class="com.tcs.djb.action.FileNbrAllocationAction">
+			<result name="error">jsp/FileNbrAllocation.jsp</result>
+			<result name="success">jsp/FileNbrAllocation.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="fileNbrAllocationAJax" class="com.tcs.djb.action.FileNbrAllocationAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			End:Added By Sanjay on 12-04-2016 as per JTrac DJB-4442 and OpenProject-CODE DEVELOPMENT #867.
+		-->
+		<!--
+			Start:Added By Lovely on 21-09-2016 as per jTrac DJB-4571,Openproject- #1492 
+		-->
+		<action name="fileNbrAllocationUserWise" class="com.tcs.djb.action.FileNbrAllocationUserWiseAction">
+			<result name="error">jsp/FileNbrAllocationUserWise.jsp</result>
+			<result name="success">jsp/FileNbrAllocationUserWise.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="fileNbrAllocationUserWiseAJax" class="com.tcs.djb.action.FileNbrAllocationUserWiseAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<!--
+			Start:Added By Lovely on 21-09-2016 as per jTrac DJB-4571,Openproject- #1492 
+		-->
+		<!--Start:Added By Madhuri on 31-08-2016 per JTrac DJB-2200 and OpenProject-#1540.
+		-->
+		<action name="mrdTransfer" class="com.tcs.djb.action.MrdTransferAction">
+			<result name="error">jsp/MrdTransfer.jsp</result>
+			<result name="success">jsp/MrdTransfer.jsp</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mrdTransferAJax" class="com.tcs.djb.action.MrdTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mrdTransferAreaAJax" class="com.tcs.djb.action.MrdTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+			<action name="mrdTransferProcExeAJax" class="com.tcs.djb.action.MrdTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		<action name="mrdTransferZroAJax" class="com.tcs.djb.action.MrdTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+			<action name="mrdTransferGetStatusAJax" class="com.tcs.djb.action.MrdTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+			<action name="mrdTransferZroLocationAJax" class="com.tcs.djb.action.MrdTransferAction"
+			method="ajaxMethod">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="login">jsp/Login.jsp</result>
+		</action>
+		
+		<!--End:Added By Madhuri on 31-08-2016 per JTrac DJB-2200 and OpenProject-OpenProject-#1540.
+		-->
+	</package>
+	<package name="json" extends="json-default" namespace="/">
+		<interceptors>
+			<interceptor-stack name="defaultStack">
+				<interceptor-ref name="json">
+					<param name="enableSMD">true</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="defaultStack" />
+		<!--
+		Start:Commented By Atanu Mandal on 08-03-2016 as com.tcs.djb.json.DevChargeMasterDataJSON is not in the workspace
+		-->
+		<!--<action name="devChargeMasterDataJSON" class="com.tcs.djb.json.DevChargeMasterDataJSON"
+			method="devChargeMasterDataJSON">
+			<result type="json">
+				<param name="enableGZIP">true</param>
+				<param name="noCache">true</param>
+			</result>
+		</action>
+	-->
+	<!--
+		End:Commented By Atanu Mandal on 08-03-2016 as com.tcs.djb.json.DevChargeMasterDataJSON is not in the workspace
+	-->
+	</package>
+	<package name="struts2" extends="json-default">
+	<!--
+		Start:Commented By Atanu Mandal on 08-03-2016 as com.tcs.djb.action.FileAction is not in the workspace
+	-->
+		<!--<action name="fileUploadAction" class="com.tcs.djb.action.FileAction">
+			<result type="json" name="success">
+				<param name="contentType">text/html</param>
+			</result>
+			<result type="json" name="error">
+				<param name="contentType">text/html</param>
+			</result>
+		</action>
+	-->
+	<!--
+		End:Commented By Atanu Mandal on 08-03-2016 as com.tcs.djb.action.FileAction is not in the workspace
+	-->
+	</package>
+</struts>

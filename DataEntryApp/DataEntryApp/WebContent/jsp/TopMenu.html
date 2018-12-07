@@ -1,0 +1,709 @@
+<!-- 
+ * @history on 18-01-2016  Arnab Nandy (1227971) added fnGotofileSearchScreen()
+ *          as per JTrac DJB-4326..
+ * @history on 15-02-2016  Rajib Hazarika (682667) added KNO generation Screen 
+ *          as per JTrac DJB-4313.
+ *@history on 10-03-2016  Atanu Mandal added link to go to Audit Action Screen as per jTrac ANDROID-293
+ * @history on 01-06-2016  Arnab Nandy (1227971) added fnDataMigrationReports()
+ *          as per JTrac DJB-4425 and OpenProject-1217.
+ * @history on 02-06-2016  Arnab Nandy (1227971) added Bypass Fingerprint to Access Management menu
+ *          as per JTrac DJB-4464 and OpenProject#1151.
+ *@history on 20-02-2016  Atanu Mandal added link to go to AMR File Upload Screen as per jTrac DJB-4464, OpenProjectID#1202
+ *@history on 19-04-2016 Lovely (986018)added fnDataUpload()
+           as per  JTrac DJB-4465 and OpenProject-918.
+ *@history on 20-04-2016 Lovely (986018)added fnFileNbrAllocation()
+            jtrac DJB-4442 and OpenProject-CODE DEVELOPMENT #867.
+ *@history on 29-08-2016 Rajib Hazarika (682667)added fnGotoRAYBTaggingScreen()
+            as per jtrac DJB-4537 and OpenProject-CODE DEVELOPMENT #1442.
+ *@history on 21-09-2016 Lovely (986018)added fnFileNbrAllocationUserWise()
+           as per jTrac DJB-4571,Openproject- #1492
+ *@history on 30-08-2016 Madhuri (735689)added fnMrdTransfer()
+           as per jTrac DJB-2200 and OpenProject-#1540.           
+-->
+<script type="text/javascript">
+	function fnGotoDataEntry(searchFor){
+		hideScreen();
+		document.location.href="dataEntry.action?searchFor="+searchFor;
+	}
+	function fnSetSearchFor(searchFor){ 			
+ 		document.forms[0].searchFor.value=searchFor;
+ 		if(searchFor=='Review'){
+ 			document.getElementById('searchFor').innerHTML="Review MRD";
+ 			document.getElementById('defaultBillGenDateRow').style.display='none';
+ 			document.getElementById('btnSaveRow').style.display='none';
+ 			document.getElementById('btnSearchRow').style.display='block'; 	 			
+ 		}else if(searchFor=='searchUnmetered'){
+ 			document.getElementById('searchFor').innerHTML="Entry for Unmetered Consumer By MRD";
+ 			document.getElementById('defaultBillGenDateRow').style.display='block';
+ 			document.getElementById('btnSaveRow').style.display='block';
+ 			document.getElementById('btnSearchRow').style.display='none';
+ 			//document.getElementById('search-error-msg').innerHTML=""; 	 			
+ 		}else{
+ 			document.getElementById('searchFor').innerHTML="Consumer Search By MRD";
+ 			document.getElementById('defaultBillGenDateRow').style.display='none';
+ 			document.getElementById('btnSaveRow').style.display='none';
+ 			document.getElementById('btnSearchRow').style.display='block';
+ 		}
+ 		//document.forms[0].selectedZone.focus();
+ 		fnSetPage('search');
+	}
+	function fnSetPage(page){
+ 		if(page=='search'){
+			document.getElementById('search').style.display='block';
+			//document.getElementById('download').style.display='none';
+			//document.getElementById('download-error-msg').innerHTML=""; 
+			document.forms[0].selectedZone.focus();
+ 		}
+ 		if(page=='download'){
+ 			document.getElementById('search').style.display='none';
+ 			//document.getElementById('download').style.display='block';
+ 			//document.getElementById('search-error-msg').innerHTML="";
+ 	 	}
+	}
+	function fnGoToLastOKReadCorrection(){
+		hideScreen();
+		document.location.href="lastOKReadCorrection.action";
+	}
+	function fnGotoMRDScheduleDownloadJobSubmitPage(){
+		hideScreen();
+		document.location.href="mrdScheduleDownloadJobSubmit.action";
+	} 
+	function fnGotoMRDScheduleDownloadPage(){
+		hideScreen();
+		document.location.href="scheduleDownload.action";
+	} 		
+	function fnGotoMRDDisconectionScreen(){
+		hideScreen();
+		document.location.href="disconnection.action";
+	}
+	function fnGotoMRDReopeningScreen(){
+		hideScreen();
+		document.location.href="reopening.action";
+	} 		
+	function fnGotoMeterReplacementScreen(){
+		hideScreen();
+		document.location.href="meterReplacement.action";
+	}
+	function fnChangePassword(userType){
+		hideScreen();
+		document.location.href="changePassword.action?hidAction=gotoChangePassword&userType="+userType;
+	}
+	function fnSetUserRole(){
+		hideScreen();
+		document.location.href="setRoleAccess.action?hidAction=gotoSetRoleAccess";
+	}
+	function fnViewAppLog(applicationName){
+		hideScreen();
+		document.location.href="viewAppLog.action?hidAction=gotoViewAppLog&appName="+applicationName;
+	}
+
+	function fnGotoNewConnectionDAFScreen(){
+		hideScreen();
+		document.location.href="newConnectionDAF.action";
+	}
+	/*Start:Added By Rajib Hazarika on 02-12-2013 as per JTrac DJB-2123*/
+	function fnGotoNewConnectionSearchDAFScreen(){
+		hideScreen();
+		document.location.href="newConnectionSearchDAF.action";
+	}
+	/*End:Added By Rajib Hazarika on 02-12-2013 as per JTrac DJB-2123*/
+
+	
+	/*Start:Added By Matiur Rahman on 25-02-2013 as per JTrac DJB-1118*/
+	function fnGotoHHDMaintenanceScreen(){
+		hideScreen();
+		document.location.href="hhdMaintenance.action";
+	}
+	/*End:Added By Matiur Rahman on 25-02-2013 as per JTrac DJB-1118*/
+	/*Start:Added By Matiur Rahman on 01-03-2013 as per JTrac DJB-1204*/
+	function fnGotoOperationMRKeyReviewScreen(){
+		hideScreen();
+		document.location.href="operationMRKeyReview.action";
+	}
+	/*End:Added By Matiur Rahman on 01-03-2013 as per JTrac DJB-1204*/
+	/*Start:Added By Tuhin on 11-03-2013 as per JTrac DJB-1205*/
+	function fnPreBillStatusDefinition(){
+		hideScreen();
+		document.location.href="preBillStatusDefinition.action";	
+	}
+	/*End:Added By Tuhin on 11-03-2013 as per JTrac DJB-1205*/
+	/*Start:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304*/
+	function fnMeterReplacementReview(){
+		hideScreen();
+		document.location.href="meterReplacementReview.action";	
+	}
+	/*End:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304*/
+	/*Start:Added By Matiur on 22-04-2013 as per JTrac DJB-1423*/
+	function fnGoToRoleScreemMappingScreen(){
+		hideScreen();
+		document.location.href="roleScreenMapping.action";	
+	}
+	/*End:Added By Matiur on 22-04-2013 as per JTrac DJB-1423*/
+	
+	/*Start:Added By Tuhin on 20-11-12*/
+	function fnCreateUser(currentTab){
+		hideScreen();
+		document.location.href="createUser.action?hidAction=gotoCreateUser&currentTab="+currentTab;
+	}
+	/*End:Added By Tuhin on 20-11-12*/	
+	/*Start:Added By Matiur Rahman on 03-06-2013*/
+	function fnSearchUser(hidAction,currentTab){
+		hideScreen();
+		document.location.href="createUser.action?hidAction="+hidAction+"&currentTab="+currentTab;
+	}
+	/*End:Added By Matiur Rahman on 03-06-2013*/
+	/*Start:Added By Matiur on 07-04-2013 as per JTrac DJB-1423*/
+	function fnUserManagement(action){
+		//hideScreen();
+		//document.location.href="userRoleManagement.action?hidAction="+action;	
+	}
+	/*End:Added By Matiur on 07-04-2013 as per JTrac DJB-1423*/
+	/*Start:Added By Matiur on 08-04-2013 as per JTrac DJB-1423*/
+	function fnGotoDemandTransfer(){
+		hideScreen();
+		document.location.href="demandTransfer.action";	
+	}
+	/*End:Added By Matiur on 08-04-2013 as per JTrac DJB-1423*/
+ 	/*Start:Added By Reshma on 13-05-2013 as per JTrac DJB-1386*/
+ 	function fnGotoRenumberRouteSequences(){
+ 	 	hideScreen();
+		document.location.href="renumberRouteSequences.action";	
+	}
+ 	/*End:Added By Reshma on 13-04-2013 as per JTrac DJB-1386*/
+ 	/*Start:Added By Arnab on 18-01-2016 as per JTrac DJB-4326*/
+ 	function fnGotofileSearchScreen(){
+ 	 	hideScreen();
+		document.location.href="fileNumberDetailSearch.action";	
+	}
+ 	/*End:Added By Arnab on 18-01-2016 as per JTrac DJB-4326*/
+ 	/*Start:Added By Matiur on 20-05-2013 as per JTrac DJB-1423*/
+	function fnGotoCreateNewMRD(){
+		hideScreen();
+		document.location.href="createMRD.action";
+	}
+	/*End:Added By Matiur on 20-05-2013 as per JTrac DJB-1423*/	 
+	/*Start:Added By Matiur on 21-06-2013 to Refresh LOV after MRD Check Out*/
+	function fnGotoRefreshLOV(){
+		hideScreen();
+		if(confirm('\n\n\nThis action will Flush All Current Dropdown List values and refresh with new values.\nAre you sure you want to Continue?\nClick OK to Continue else Cancel.\n\n\n')){
+			document.location.href="populateLOV.action?hidAction=refresh";
+		}else{
+			showScreen();
+		}
+	}
+	/*End:Added By Matiur on 21-06-2013 to Refresh LOV after MRD Check Out*/
+	/*Start:Added By Matiur on 20-05-2013 as per JTrac DJB-1423*/
+	function fnGotoOnlineBatchBilling(){
+		hideScreen();
+		document.location.href="onlineBatchBilling.action";
+	}
+	/*End:Added By Matiur on 20-05-2013 as per JTrac DJB-1423*/
+	
+   /***********Added By mrityunjoy for single account billgeneration start********************************/
+	function fnGotoKNOBillGenerator()
+	{
+		hideScreen();
+		document.location.href= "knoBillGen.action";
+
+	}
+	 /***********End Mrityunjoy single account billgeneration********************************/
+	 /*Start:Added By Reshma on 30-07-2013 as per JTrac HHD-24*/
+ 	function fnGotoHHDMaster(){
+ 	 	hideScreen();
+		document.location.href="hhdMaster.action";	
+	}
+ 	function fnGotoHHDUserMaster(){
+ 	 	hideScreen();
+		document.location.href="hhdUserMaster.action";	
+	}
+ 	function fnGotoHHDVersionMaster(){
+ 	 	hideScreen();
+		document.location.href="hhdVersionMaster.action";	
+	}
+ 	/*End:Added By Reshma on 30-07-2013 as per JTrac HHD-24*/
+ 	/*Start:Added By Matiur on 12-08-2013*/
+ 	function fnGotoHHDSynchScreen(){
+		//hideScreen();
+		//document.location.href="hhdSynchronization.action";
+		var URL="hhdSynchronization.action";
+		window.open(URL,"_blank","channelmode=no,fullscreen=no,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=50px,width=600,height=480","true");
+	}
+ 	/*End:Added By Matiur on 12-08-2013*/
+ 	/*Start:Added By Matiur on 20-09-2013 as per JTrac HHD-48*/
+	function fnGotoMeterReaderMaintenance(mode){
+		hideScreen();
+		document.location.href="meterReaderMaintenance.action?page="+mode;
+	}
+	function fnGotoMRDTagging(){
+		hideScreen();
+		document.location.href="mrdTagging.action";
+	}	
+	/*End:Added By Matiur on on 20-09-2013 as per JTrac HHD-48*/
+	/*Start:Added By Karthick K on 21-10-2013 as per JTrac DJB-1758*/
+	function fnGotoHHDCredentials(){
+		hideScreen();
+		document.location.href="hhdCredentials.action";
+	}	
+	/*End:Added By Karthick K on 21-10-2013 as per JTrac DJB-1758*/
+	function fnGotoDevChargeMasterData(){
+		hideScreen();
+		document.location.href="devChargeMasterData.action";
+	}
+	/* Removed by Matiur Rahman on 06-02-2014 as Kartick added this for POC purpose and should not be Checked in VSS */
+	/*Start:Added By Aniket Chatterjee on 02-08-2015 as per JTrac DJB-4703*/
+	function fnGotoRainWaterHarvestingScreen(){
+		hideScreen();
+		//START: Changed  by Rajib as per Jtrac DJB-4037 to popup Re-Enter Password Screen on click of Rain water Harvesting Screen
+		//document.location.href="login.action?_x=confirm&callFrom=rainWater";
+		document.location.href="rainWaterHarvesting.action";
+		//END: Changed  by Rajib as per Jtrac DJB-4037 to popup Re-Enter Password Screen on click of Rain water Harvesting Screen
+	}	
+	/*End:Added By Aniket Chatterjee on 02-08-2015 as per JTrac DJB-4703*/
+		/*Start:Added By Rajib Hazarika on 29-08-2016 as per JTrac DJB-4537*/
+	function fnGotoRAYBTaggingScreen(){
+		hideScreen();
+		//START: Changed  by Rajib as per Jtrac DJB-4037 to popup Re-Enter Password Screen on click of Rain water Harvesting Screen
+		document.location.href="raybFlagUpdation.action";
+		//END: Changed  by Rajib as per Jtrac DJB-4037 to popup Re-Enter Password Screen on click of Rain water Harvesting Screen
+	}	
+	/*End:Added By Rajib Hazarika on 29-08-2016 as per JTrac DJB-4537*/
+	/*Start:Added By Atanu Mandal on 29-12-2015 as per JTrac ANDROID-293 */
+	function fnImgAudit(){
+		hideScreen();
+		document.location.href="mtrReadImgAudit.action";
+	}
+	/*End:Added By Atanu Mandal on 29-12-2015 as per JTrac ANDROID-293 */
+	/*Start:Added By Atanu Mandal on 13-01-2016 as per JTrac ANDROID-293 */
+	function fnConsumptionVariationAudit(){
+		hideScreen();
+		document.location.href="consumptionVariationAudit.action";
+	}
+	/*Start:Added By Atanu Mandal on 13-01-2016 as per JTrac ANDROID-293 */
+	/*Start:Added By Atanu Mandal on 08-03-2016 as per JTrac ANDROID-293 */
+	function fnAuditAction(){
+		hideScreen();
+		document.location.href="finalmSevaAudit.action";
+	}
+	/*Start:Added By Atanu Mandal on 08-03-2016 as per JTrac ANDROID-293 */
+	/* START: rajib added on 11-JAN-2015 as per JTrac DJB-4313 to add New Connection file entry screen */
+	function fnGotoNewConnFileEntryScreen(){
+		hideScreen();
+		document.location.href="newConnFileEntry.action";
+	}
+	/* END: rajib added on 11-JAN-2015 as per JTrac DJB-4313 to add New Connection file entry screen */	
+	/*Start:Added By Diksha Mukherjee on 19-01-2016 as per JTrac #### */
+		function fnKNOGeneration(){
+		hideScreen();
+		document.location.href="kNOGeneration.action";
+	}
+		/*End:Added By Diksha Mukherjee on 19-01-2016 as per #### */
+		
+		/* START: Added By Arnab Nandy on 01-06-2016 as per  JTrac DJB-4425 and OpenProject-1217.*/
+		function fnDataMigrationReports(){
+		hideScreen();
+		document.location.href="dataMigrationReports.action";
+	}
+		/*End:Added By Arnab Nandy on 01-06-2016 as per  JTrac DJB-4425 and OpenProject-1217. */
+	
+	/* Start:Added By Atanu on 02-06-2016 as per open project 1202 */
+	function fnGotoMRDFileUpload(){
+		hideScreen();
+		document.location.href="mrdFileUpload.action";
+	}
+	/* End:Added By Atanu on 02-06-2016 as per open project 1202 */
+	/* START: Added By Lovely on 19-04-2016 as per  JTrac DJB-4465 and OpenProject-918.*/
+		function fnDataUpload(){
+		hideScreen();
+		document.location.href="dataUpload.action";
+	}
+/* End:Added By Lovely on 19-04-2016 as per  JTrac DJB-4465 and OpenProject-918.*/
+ /*Start:Added By Lovely on 12-04-2016 as per JTrac  4442 and OpenProject-CODE DEVELOPMENT #867 #### */
+	function fnFileNbrAllocation(){
+		hideScreen();
+		document.location.href="fileNbrAllocation.action";
+	}
+/*End:Added By Lovely on 12-04-2016 as per jtrac 4442 and OpenProject-CODE DEVELOPMENT #867 #### */	
+  /*Start:Added By Lovely on 21-09-2016 as per jTrac DJB-4571,Openproject- #1492   */
+	function fnFileNbrAllocationUserWise(){
+		hideScreen();
+		document.location.href="fileNbrAllocationUserWise.action";
+	}
+/*End:Added By Lovely on 12-04-2016 as per jTrac DJB-4571,Openproject- #1492   */
+/*Start:Added By Madhuri on 12-04-2016 as per jtrac DJB-2200 and OpenProject-#### */	
+	function fnMrdTransfer(){
+		hideScreen();
+		document.location.href="mrdTransfer.action";
+	}
+/*End:Added By Madhuri on 12-04-2016 as per jtrac DJB-2200  and OpenProject-#### */
+</script>
+<div id="menu">
+<ul class="menu">
+	<%if("HOME".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+	<li class="current"><a href="#" onclick="javascript:goHome()"><span>Home</span></a>
+	<ul><li><a href="#" onclick="fnGotoRefreshLOV();"><span>Refresh Application</span></a></li></ul>
+	<%}else{ %>
+	<li><a href="#" onclick="javascript:goHome()"><span>Home</span></a>
+	<ul><li><a href="#" onclick="fnGotoRefreshLOV();"><span>Refresh Application</span></a></li></ul>
+	<%} %></li>
+	<% if (null!=roleScreenMap &&null!=userRoleId && null!=userScreenMap && null!=userId) { %> 
+		<!-- Start:Added By Matiur Rahman on 01-03-2013 as per JTrac DJB-1204 -->
+		<% if(userRoleId.equals(roleScreenMap.get("16"))||userId.equals(userScreenMap.get("16"))) { %>
+			<%if("OPERATION".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+			<li class="current"><a href="#" class="parent" title="Screens for Operation team."><span>OPERATION</span></a>
+			<%}else{ %>
+			<li><a href="#" class="parent" title="Screens for Operation team."><span>OPERATION</span></a>
+			<%} %>
+			<ul>
+				<li><a href="#" title="Click to go to Operation MRKey Review Screen" onclick="fnGotoOperationMRKeyReviewScreen();"><span>Operation
+				MRKey Review</span></a></li>
+				<!-- Start :  Added By Arnab Nandy on 01-06-2016 as per  JTrac DJB-4425 and OpenProject-1217. -->
+				<li><a href="#" title="Click to go to Data Migration Report Generation Screen" onclick="fnDataMigrationReports();"><span>Data Migration
+				Reports</span></a></li>
+				<!-- End :  Added By Arnab Nandy on 01-06-2016 as per  JTrac DJB-4425 and OpenProject-1217. -->
+			</ul>
+			</li>
+		<% } %>
+		<!-- End:Added By Matiur Rahman on 01-03-2013 as per JTrac DJB-1204 -->
+		<!-- Start:Added By Aniket on 02-08-2015 -->
+		<!-- Start:Added By Rajib On 29-08-2015 to introduce a tag for Rain Water as per Jtrac DJB-4357 -->
+		<!--  
+		<% if(userRoleId.equals(roleScreenMap.get("39"))||userId.equals(userScreenMap.get("39"))) { %>
+		<li><a href="#"	title="Click to go to Rain Water Harvesting Tagging Screen"	onclick="fnGotoRainWaterHarvestingScreen();"><span>Rain Water Harvesting Tagging</span></a></li>
+		<%}%>		-->
+		<% if(userRoleId.equals(roleScreenMap.get("39"))||userId.equals(userScreenMap.get("39")) ||userRoleId.equals(roleScreenMap.get("51"))||userId.equals(userScreenMap.get("51"))) { %>
+		<%if("Rain Water".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+			<li class="current"><a href="#" class="parent" title="Screens for Rain Water Harvesting Related Flag updation."><span>Rain Water</span></a>
+			<%}else{ %>
+			<li><a href="#" class="parent" title="Screens for Rain Water Harvesting Related Flag updation."><span>Rain Water</span></a>
+			<%} %>
+		<ul>
+			<% if(userRoleId.equals(roleScreenMap.get("39"))||userId.equals(userScreenMap.get("39"))) { %>
+			<li><a href="#"	title="Click to go to Rain Water Harvesting Tagging Screen"	onclick="fnGotoRainWaterHarvestingScreen();"><span>Rain Water Harvesting Tagging</span></a></li>
+			<%} %>
+			<% if(userRoleId.equals(roleScreenMap.get("51"))||userId.equals(userScreenMap.get("51"))) { %>
+			<li><a href="#"	title="Click to go to Update Rocky Area & On banks of Yamuna Flag Screen"	onclick="fnGotoRAYBTaggingScreen();"><span>Rocky Area/banks of Yamuna Flag Updation</span></a></li>
+			<%} %>
+		</ul>
+		</li>
+		<% } %>		
+		<!-- END:Added By Rajib On 29-08-2015 to introduce a tag for Rain Water as per Jtrac DJB-4357 -->
+		<!-- End:Added By Aniket on 02-08-2015 -->
+		<% if(userRoleId.equals(roleScreenMap.get("34"))||userId.equals(userScreenMap.get("34"))||userRoleId.equals(roleScreenMap.get("10"))||userId.equals(userScreenMap.get("10"))||userRoleId.equals(roleScreenMap.get("11"))||userId.equals(userScreenMap.get("11"))||userRoleId.equals(roleScreenMap.get("12"))||userId.equals(userScreenMap.get("12"))||userRoleId.equals(roleScreenMap.get("13"))||userId.equals(userScreenMap.get("13"))||userRoleId.equals(roleScreenMap.get("14"))||userId.equals(userScreenMap.get("14"))||userRoleId.equals(roleScreenMap.get("19"))||userId.equals(userScreenMap.get("19"))||userRoleId.equals(roleScreenMap.get("20"))||userId.equals(userScreenMap.get("20"))||userRoleId.equals(roleScreenMap.get("23"))||userId.equals(userScreenMap.get("23"))||userRoleId.equals(roleScreenMap.get("24"))||userId.equals(userScreenMap.get("24"))||userRoleId.equals(roleScreenMap.get("28"))||userId.equals(userScreenMap.get("28"))) { %>
+		<%if("MRD".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+			<li class="current"><a href="#" class="parent" title="Meter Read Data"><span>MRD</span></a>
+		<%}else{ %>
+			<li><a href="#" class="parent" title="Meter Read Data"><span>MRD</span></a>
+		<%} %>
+		<ul>
+			<% if(userRoleId.equals(roleScreenMap.get("25"))||userId.equals(userScreenMap.get("25"))) { %>
+			<li><a href="#" onclick="fnGotoCreateNewMRD();"><span>Create New MRD</span></a></li>
+			<% } %>
+
+            <!-- KNO BILL Generation -->
+			<% if(userRoleId.equals(roleScreenMap.get("27"))||userId.equals(userScreenMap.get("27"))) { %>
+			<li><a href="#" onclick="fnGotoKNOBillGenerator();"><span>Single Customer Bill Generation</span></a></li>
+			<% } %>
+
+
+			<% if(userRoleId.equals(roleScreenMap.get("10"))||userId.equals(userScreenMap.get("10"))||userRoleId.equals(roleScreenMap.get("11"))||userId.equals(userScreenMap.get("11"))) { %>
+			<li><a href="#" onclick="fnGotoDataEntry('Entry');"><span>MRD
+			Entry</span></a></li>
+			<li><a href="#" onclick="fnGotoDataEntry('searchUnmetered');"><span>MRD Entry(Unmetered)</span></a></li>
+			<%}%>
+			<%if(userRoleId.equals(roleScreenMap.get("12"))||userId.equals(userScreenMap.get("12"))) { %>
+			<li><a href="#" onclick="fnGotoDataEntry('Review');"><span>MRD
+			Entry Freeze</span></a></li>
+			<%}else{%>
+			<%if(userRoleId.equals(roleScreenMap.get("10"))||userId.equals(userScreenMap.get("10"))||userRoleId.equals(roleScreenMap.get("11"))||userId.equals(userScreenMap.get("11"))) { %>
+			<li><a href="#" onclick="fnGotoDataEntry('Review');"><span>MRD
+			Entry Review</span></a></li>
+			<%}}%>
+			<% if(userRoleId.equals(roleScreenMap.get("10"))||userId.equals(userScreenMap.get("10"))) { %>			
+			<li><a href="#" onclick="fnGotoMRDDisconectionScreen();"><span>MRD
+			Disconnection</span></a></li>
+			<li><a href="#" onclick="fnGotoMRDReopeningScreen();"><span>MRD
+			Reopening</span></a></li>
+			<%}%>
+			<% if(userRoleId.equals(roleScreenMap.get("19"))||userId.equals(userScreenMap.get("19"))) { %>
+			<li><a href="#" onclick="fnGotoMeterReplacementScreen();"><span>MRD
+			Meter Replacement</span></a></li>
+			<%}%>
+			<% if(userRoleId.equals(roleScreenMap.get("20"))||userId.equals(userScreenMap.get("20"))) { %>
+			<!-- Start:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304 -->
+			<li><a href="#" onclick=fnMeterReplacementReview();><span>MRD
+			Meter Replacement Freeze</span></a></li>
+			<!-- End:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304 -->
+			<%}else{%>
+			<% if(userRoleId.equals(roleScreenMap.get("19"))||userId.equals(userScreenMap.get("19"))) { %>
+			<!-- Start:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304 -->
+			<li><a href="#" onclick=fnMeterReplacementReview();><span>MRD
+			Meter Replacement Review</span></a></li>
+			<!-- End:Added By Tuhin on 20-03-2013 as per JTrac DJB-1304 -->
+			<%}}%>
+			<% if(userRoleId.equals(roleScreenMap.get("22"))||userId.equals(userScreenMap.get("22"))) { %>
+			<li><a href="#" onclick="fnGotoMRDScheduleDownloadJobSubmitPage();"><span>MRD
+			Schedule Job Submit</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("13"))||userId.equals(userScreenMap.get("13"))) { %>
+			<li><a href="#" onclick="fnGotoMRDScheduleDownloadPage();"><span>MRD
+			Schedule Download</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("14"))||userId.equals(userScreenMap.get("14"))) { %>
+			<li><a href="#" onclick="fnGoToLastOKReadCorrection();"><span>Last
+			OK Read Correction</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("23"))||userId.equals(userScreenMap.get("23"))) { %>
+			<li><a href="#" onclick="fnGotoDemandTransfer();"><span>Demand Transfer</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("24"))||userId.equals(userScreenMap.get("24"))) { %>
+			<li><a href="#" onclick="fnGotoRenumberRouteSequences();"><span>Renumbering Route Sequences</span></a></li>
+			<% } %>
+			<!-- Start:Added By Arnab on 18-01-2016 as per JTrac DJB-4326 -->
+			<% if(userRoleId.equals(roleScreenMap.get("43"))||userId.equals(userScreenMap.get("43"))) { %>
+			<li><a href="#" onclick="fnGotofileSearchScreen();"><span>File Number Search Screen</span></a></li>
+			<% } %>
+			<!-- End:Added By Arnab on 18-01-2016 as per JTrac DJB-4326 -->
+			<% if(userRoleId.equals(roleScreenMap.get("28"))||userId.equals(userScreenMap.get("28"))) { %>
+			<li><a href="#" onclick="fnGotoOnlineBatchBilling();"><span>Batch Billing(MRD)</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("34"))||userId.equals(userScreenMap.get("34"))) { %>
+			<li><a href="#" onclick="fnGotoMRDTagging();"><span>MRD Tagging</span></a></li>
+			<% } %>
+			<!-- Start:Added By Atanu on 02-06-2016 as per open project 1202,jTrac : DJB-4464 -->
+			<% if(userRoleId.equals(roleScreenMap.get("48"))||userId.equals(userScreenMap.get("48"))) { %>
+			<li><a href="#" onclick="fnGotoMRDFileUpload();"><span>MRD File Upload</span></a></li>
+			<% } %>
+			<!-- End:Added By Atanu on 02-06-2016 as per open project 1202,jTrac : DJB-4464 -->
+		</ul>
+		</li>
+		<%}%>
+		<% if((null!=roleScreenMap.get("21")||null!=userScreenMap.get("21")) || (null!=roleScreenMap.get("36")||null!=userScreenMap.get("36"))) { %>
+		<li><a href="#" class="parent" title="Data Alteration Form"><span>DAF</span></a>
+		<ul>
+			<% if(userRoleId.equals(roleScreenMap.get("21"))||userId.equals(userScreenMap.get("21"))) { %>
+				<li><a href="#" onclick="fnGotoNewConnectionDAFScreen();"><span>New	Connection DAF Entry</span></a></li>
+			<% } %>
+			<!-- Start:Added By Rajib Hazarika on 02-12-2013 as per JTrac DJB-2123 -->
+			<% if(userRoleId.equals(roleScreenMap.get("36"))||userId.equals(userScreenMap.get("36"))) { %>
+				<li><a href="#" onclick="fnGotoNewConnectionSearchDAFScreen();"><span>New	Connection DAF Search</span></a></li>
+			<% } %>
+			<!-- End:Added By Rajib Hazarika on 02-12-2013 as per JTrac DJB-2123 -->
+			<!-- Start:Added By Rajib Hazarika on 11-01-2016 as per JTrac DJB-4313 -->
+			<% if(userRoleId.equals(roleScreenMap.get("41"))||userId.equals(userScreenMap.get("41"))) { %>
+				<li><a href="#" onclick="fnGotoNewConnFileEntryScreen();"><span>New	Connection File Entry</span></a></li>
+			<% } %>
+			<!-- END:Added By Rajib Hazarika on 11-01-2016 as per JTrac DJB-4313 -->
+			<!-- Start: Added By Rajib Hazarika on 15-02-2016 as per JTrac DJB-4313 -->
+				<% if(userRoleId.equals(roleScreenMap.get("44"))||userId.equals(userScreenMap.get("44"))) { %>
+			<li><a href="#" onclick="fnKNOGeneration();"><span>KNO Generation</span></a></li>
+			<% } %>
+			<!-- END: Added By Rajib Hazarika on 15-02-2016 as per JTrac DJB-4313 -->
+		</ul>
+		</li>
+		<% } %>
+		<!-- Start:Added By Matiur Rahman on 25-02-2013 as per JTrac DJB-1118 -->
+		<% if(null!=roleScreenMap.get("15")||null!=userScreenMap.get("15")||null!=roleScreenMap.get("29")||null!=userScreenMap.get("29")||null!=roleScreenMap.get("30")||null!=userScreenMap.get("30")||null!=roleScreenMap.get("31")||null!=userScreenMap.get("31")) { %>
+		<%if("HHD".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+			<li class="current"><a href="#" class="parent" title="Hand Held Device"><span>HHD</span></a>
+		<%}else{ %>
+			<li><a href="#" class="parent" title="Hand Held Device"><span>HHD</span></a>
+		<%} %>
+		<ul>
+			<% if(userRoleId.equals(roleScreenMap.get("15"))||userId.equals(userScreenMap.get("15"))) { %>
+			<li><a href="#"
+				title="Click to go to MRD,Meter Reader & HHD Maintenance Screen" onclick="fnGotoHHDMaintenanceScreen();"><span>HHD Maintenance</span></a></li>
+			<% } %>
+			<!-- Start:Added By Karthick K on 21-10-2013 as per JTrac DJB-1758 -->
+			<% if(userRoleId.equals(roleScreenMap.get("35"))||userId.equals(userScreenMap.get("35"))) { %>
+			<li><a href="#"
+				title="Click to go to HHD Credentials Screen" onclick="fnGotoHHDCredentials();"><span>HHD Credentials</span></a></li>
+			<% } %>
+			<!-- End:Added By Karthick K on 21-10-2013 as per JTrac DJB-1758-->
+			<!-- Removed by Matiur Rahman on 06-02-2014 as Kartick added this for POC purpose and should not be Checked in VSS -->			
+			<!-- Start:Added By Reshma on 30-07-2013 as per JTrac HHD-24 
+			<% if(userRoleId.equals(roleScreenMap.get("29"))||userId.equals(userScreenMap.get("29"))) { %>
+			<li><a href="#"
+				title="Click to go to HHD Master Screen" onclick="fnGotoHHDMaster();"><span>HHD Master</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("30"))||userId.equals(userScreenMap.get("30"))) { %>
+			<li><a href="#"
+				title="Click to go to HHD User Master Screen" onclick="fnGotoHHDUserMaster();"><span>HHD User Master</span></a></li>
+			<% } %>
+			<% if(userRoleId.equals(roleScreenMap.get("31"))||userId.equals(userScreenMap.get("31"))) { %>
+			<li><a href="#"
+				title="Click to go to HHD Version Master Screen" onclick="fnGotoHHDVersionMaster();"><span>HHD Version Master</span></a></li>
+			<% } %>
+			-->
+			<!-- End:Added By Reshma on 30-07-2013 as per JTrac HHD-24 --> 
+		</ul>
+		</li>
+		<% } %> 
+		<!--End:Added By Matiur Rahman on 25-02-2013 as per JTrac DJB-1118 -->	
+		<%if("ADMIN".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+		<li class="current"><a href="#" class="parent" title="Administration"><span>ADMIN</span></a>
+		<%}else{ %>
+		<li><a href="#" class="parent" title="Administration"><span>ADMIN</span></a>
+		<%} %>
+		<ul>
+			<li><a href="#" onclick="fnChangePassword('SELF')"><span>Change	My Password</span></a></li>
+			<% if(null!=roleScreenMap.get("6")||null!=userScreenMap.get("6")||null!=roleScreenMap.get("8")||null!=userScreenMap.get("8")||null!=roleScreenMap.get("7")||null!=userScreenMap.get("7")||null!=roleScreenMap.get("5")||null!=userScreenMap.get("5")||userRoleId.equals(roleScreenMap.get("4"))||userId.equals(userScreenMap.get("4"))) { %>	
+			<li><a href="#" class="parent"><span>Access Management</span></a>
+			<ul>
+				<% if(userRoleId.equals(roleScreenMap.get("5"))||userId.equals(userScreenMap.get("5"))) { %>
+				<li><a href="#" class="parent" onclick="fnCreateUser('');"><span>Create a User</span></a>
+				<ul>
+					<li><a href="#" onclick="fnCreateUser('Data Entry');"><span>Data Entry User</span></a></li>
+					<li><a href="#" onclick="fnCreateUser('All Application');"><span>All Application User</span></a></li>
+					<!-- Start: Added By Arnab Nandy on 02-06-2016 as per JTrac DJB-4464 and OpenProject#1151 -->
+					<li><a href="#" onclick="fnCreateUser('Bypass Fingerprint');"><span>Bypass Fingerprint</span></a></li>
+					<!-- End: Added By Arnab Nandy on 02-06-2016 as per JTrac DJB-4464 and OpenProject#1151 -->
+				</ul>
+				</li>
+				<li><a href="#" class="parent" onclick="fnSearchUser('search','');"><span>Manage a User</span></a>
+				<ul>
+					<li><a href="#" onclick="fnSearchUser('search','Data Entry');"><span>Data Entry User</span></a></li>
+					<li><a href="#" onclick="fnSearchUser('search','All Application');"><span>All Application User</span></a></li>
+				</ul>
+				</li>
+				<% } %>  
+				<% if(userRoleId.equals(roleScreenMap.get("4"))||userId.equals(userScreenMap.get("4"))) { %>
+				<!--  <li><a href="#" class="parent"><span>User Role</span></a>
+                    <ul>
+                        <li><a href="#" onclick="fnUserManagement('Add');"><span>Add New</span></a></li>
+                        <li><a href="#" onclick="fnUserManagement('Delete');"><span>Delete</span></a></li>
+                        <li><a href="#" onclick="fnUserManagement('Update');"><span>Update</span></a></li>
+                    </ul>
+                </li>-->
+				<% } %> 
+				<% if(userRoleId.equals(roleScreenMap.get("7"))||userId.equals(userScreenMap.get("7"))) { %>
+				<li><a href="#" onclick="fnChangePassword('ADMIN');"><span>Reset Password of a User</span></a></li>
+				<% } %>
+				<% if(userRoleId.equals(roleScreenMap.get("6"))||userId.equals(userScreenMap.get("6"))||userRoleId.equals(roleScreenMap.get("8"))||userId.equals(userScreenMap.get("8"))) { %>
+				<li><a href="#" class="parent"><span>Data Entry Application</span></a>
+					<ul>
+						<% if(userRoleId.equals(roleScreenMap.get("6"))||userId.equals(userScreenMap.get("6"))) { %>
+						<li><a href="#" onclick="fnGoToRoleScreemMappingScreen();"	title="Click to Go to Role/User Screen Mapping Screen of Data Entry Application"><span>Role/User Screen Mapping</span></a></li>
+						<% } %> 
+						<% if(userRoleId.equals(roleScreenMap.get("8"))||userId.equals(userScreenMap.get("8"))) { %>
+						<li><a href="#" onclick="fnSetUserRole();" title="Set role of a Data Entry Application User."><span>Set User Role</span></a></li>
+						<% } %> 
+					</ul>
+				</li>
+				<% } %> 
+			</ul>
+			</li>
+			<%}%>
+			<% if(userRoleId.equals(roleScreenMap.get("9"))||userId.equals(userScreenMap.get("9"))) { %>
+			<li><a href="#" class="parent"><span>View Application Log</span></a>
+			<ul>
+				<li><a href="#" onclick="fnViewAppLog('Consumer Portal');"><span>Consumer Portal</span></a></li>
+				<li><a href="#" onclick="fnViewAppLog('DE Application');"><span>Data Entry Application</span></a></li>
+				<li><a href="#" onclick="fnViewAppLog('Employee Portal');"><span>Employee Portal</span></a></li>
+				<li><a href="#" onclick="fnViewAppLog('RMS Web Service');"><span>RMS Web Service</span></a></li>
+				<li><a href="#" onclick="fnViewAppLog('Online Batch Billing');"><span>Online Batch Billing</span></a></li>
+			</ul>
+			</li>
+			<% } %> 
+		</ul>
+		</li>
+		<!-- <li class="last"><a href="#"><span>Contacts</span></a>
+							        	<ul>
+							                <li><a href="#" class="parent"><span>Sub Item 1</span></a>
+							                    <ul>
+							                        <li><a href="#" class="parent"><span>Sub Item 1.1</span></a>
+							                            <ul>
+							                                <li><a href="#"><span>Sub Item 1.1.1</span></a></li>
+							                                <li><a href="#"><span>Sub Item 1.1.2</span></a></li>
+							                            </ul>
+							                        </li>
+							                        <li><a href="#"><span>Sub Item 1.2</span></a></li>
+							                        <li><a href="#"><span>Sub Item 1.3</span></a></li>
+							                        <li><a href="#"><span>Sub Item 1.4</span></a></li>
+							                        <li><a href="#"><span>Sub Item 1.5</span></a></li>
+							                        <li><a href="#"><span>Sub Item 1.6</span></a></li>
+							                        <li><a href="#" class="parent"><span>Sub Item 1.7</span></a>
+							                            <ul>
+							                                <li><a href="#"><span>Sub Item 1.7.1</span></a></li>
+							                                <li><a href="#"><span>Sub Item 1.7.2</span></a></li>
+							                            </ul>
+							                        </li>
+							                    </ul>
+							                </li>
+							                <li><a href="#"><span>Sub Item 2</span></a></li>
+							                <li><a href="#"><span>Sub Item 3</span></a></li>
+							            </ul>
+							        </li> -->
+		<% if(null!=roleScreenMap.get("18")||null!=userScreenMap.get("18")||null!=roleScreenMap.get("25")||null!=userScreenMap.get("25")||null!=roleScreenMap.get("33")||null!=userScreenMap.get("33")||null!=roleScreenMap.get("38")||null!=userScreenMap.get("38")||null!=userScreenMap.get("46")||null!=userScreenMap.get("53")||null!=userScreenMap.get("52")) { %>
+		<!-- Start:Added By Tuhin on 11-03-2013 as per JTrac DJB-1205 -->
+		<%if("MASTER".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+		<li class="current"><a href="#" class="parent" title="Master Data Entry Screens"><span>Master Data</span></a>
+		<%}else{ %>
+		<li><a href="#" class="parent" title="Master Data Entry Screens"><span>Master Data</span></a>
+		<%} %>
+			<ul>
+				<% if(userRoleId.equals(roleScreenMap.get("25"))||userId.equals(userScreenMap.get("25"))) { %>
+				<li><a href="#" onclick="fnGotoCreateNewMRD();"><span>Create New MRD</span></a></li>
+				<% } %>
+				<% if(userRoleId.equals(roleScreenMap.get("18"))||userId.equals(userScreenMap.get("18"))) { %>
+				<li><a href="#" onclick="fnPreBillStatusDefinition();"><span>Pre Bill Status Definition</span></a></li>
+				<% } %>
+				<% if(userRoleId.equals(roleScreenMap.get("33"))||userId.equals(userScreenMap.get("33"))) { %>
+				<li><a href="#" onclick="fnGotoMeterReaderMaintenance('add');"><span>Add Meter Reader</span></a></li>
+				<li><a href="#" onclick="fnGotoMeterReaderMaintenance('search');"><span>Search Meter Reader</span></a></li>
+				<% } %>
+				<% if(userRoleId.equals(roleScreenMap.get("38"))||userId.equals(userScreenMap.get("38"))) { %>
+				<li><a href="#" onclick="fnGotoDevChargeMasterData();"><span>Dev Charge Master Data</span></a></li>
+				<% } %>
+			    <% if(userRoleId.equals(roleScreenMap.get("46"))||userId.equals(userScreenMap.get("46"))) { %>
+				<li><a href="#" onclick="fnFileNbrAllocation();"><span>File Number Allocation</span></a></li>
+				<% } %>
+				<% if(userRoleId.equals(roleScreenMap.get("53"))||userId.equals(userScreenMap.get("53"))) { %>
+				<li><a href="#" onclick="fnFileNbrAllocationUserWise();"><span>File Nbr Allocation User Wise</span></a></li>
+				<% } %>
+				<% if(userRoleId.equals(roleScreenMap.get("52"))||userId.equals(userScreenMap.get("52"))) { %>
+				<li><a href="#" onclick="fnMrdTransfer();"><span>Mrd Transfer</span></a></li>
+				<% } %>
+			</ul>
+		</li>
+		<!-- End:Added By Tuhin on 11-03-2013 as per JTrac DJB-1205 -->
+			
+		<% } %> 
+		<!-- Start:Added By Atanu Mandal on 29-12-2015 as per JTrac ANDROID-293 -->
+		
+		<% if(null!=roleScreenMap.get("40")||null!=userScreenMap.get("40")||null!=roleScreenMap.get("42")||null!=userScreenMap.get("42")|| null!=roleScreenMap.get("45")||null!=userScreenMap.get("45")) { %>
+		<%if("AUDIT".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+			<li class="current"><a href="#" class="parent" title="DJB mSeva Audit"><span>AUDIT</span></a>
+		<%}else{ %>
+			<li><a href="#" class="parent" title="DJB mSeva Audit"><span>AUDIT</span></a>
+		<%} %>
+		<ul>
+		<!-- Insert your page here -->
+		<% if(userRoleId.equals(roleScreenMap.get("40"))|| userId.equals(userScreenMap.get("40"))) { %>
+		<li><a href="#" onclick="fnImgAudit();"><span>Meter Read Image Audit</span></a></li>
+		<% } %>
+		<% if(userRoleId.equals(roleScreenMap.get("42"))|| userId.equals(userScreenMap.get("42"))) { %>
+		<li><a href="#" onclick="fnConsumptionVariationAudit();"><span>Consumption Variation Audit</span></a></li>
+		<% } %>
+		<% if(userRoleId.equals(roleScreenMap.get("45"))|| userId.equals(userScreenMap.get("45"))) { %>
+		<li><a href="#" onclick="fnAuditAction();"><span>Audit Action</span></a></li>
+		<% } %>
+		</ul>
+		<% } %> 
+		<!--End:Added By Atanu Mandal on 29-12-2015 as per JTrac ANDROID-293 -->	
+	<% } %> 
+	<!-- Start:Added By Lovely (986018) on  19-04-2016 as per  JTrac DJB-4465 and OpenProject-918.-->
+	    <% if(null!=roleScreenMap.get("47")||null!=userScreenMap.get("47")) { %>
+	    <%if("Data Migration".equalsIgnoreCase((String)session.getAttribute("CURR_TAB"))){ %>
+		<li class="current"><a href="#" class="parent" title="Data Migration"><span>Data Migration</span></a>
+		<%}else{ %>
+			<li><a href="#" class="parent" title="Data Migration"><span>Data Migration</span></a>
+		<%} %>
+		<ul>
+		<!-- Insert your page here -->
+		<% if(userRoleId.equals(roleScreenMap.get("47"))|| userId.equals(userScreenMap.get("47"))) { %>
+         <li><a href="#" onclick="fnDataUpload();"><span>Data Upload Screen</span></a></li>
+         <% } %>
+       </ul>
+       <% } %> 
+       <!-- END: Lovely (986018) on  19-04-2016 as per  JTrac DJB-4465 and OpenProject-918.-->
+     </div>

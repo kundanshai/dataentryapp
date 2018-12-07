@@ -1,0 +1,320 @@
+<!--
+*@history  Atanu Mandal on 10-03-2016 edited this page for adding audit findings functionalities
+-->
+<style>
+/* Added By Matiur Rahman on 26-02-2013 Start*/
+#kno-audit-box {
+	z-index: 500;
+		filter: alpha(opacity=50); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+		-moz-opacity: .50; /*older Mozilla*/
+		-khtml-opacity: 0.5;   /*older Safari*/
+		opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#000000;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+
+#kno-audit-box-field {
+		z-index: 600;		
+		background-color:#fff;
+		border:5px solid #33CCCC;
+		width:70%; 
+		height:70%;
+		align:center;
+		valign:middle;
+		color:#000;
+		position:absolute; 
+		top:15%;
+		left:15%;
+		text-align:center;
+		/* Firefox */
+	    display:-moz-box;
+	    -moz-box-pack:center;
+	    -moz-box-align:center;
+	
+	    /* Safari and Chrome */
+	    display:-webkit-box;
+	    -webkit-box-pack:center;
+	    -webkit-box-align:center;
+	
+	    /* W3C */
+	    display:box;
+	    box-pack:center;
+	    box-align:center;		
+}
+
+</style>
+<script>
+var rowNumber;
+function popupKNODetailAuditScreen(slNo,kno,mtrNo,lastAuditDate,lastAuditStatus,lastAuditRmrk,billRound,siteVistRequrd,assignTo,assignToFlg,rowNum) {
+	window.scrollTo(0,0);
+	getKNOAuditDetailAjaxCall(kno);
+	rowNumber = rowNum;
+	if (null != document.getElementById('kno-audit-box')
+			&& 'null' != document.getElementById('kno-audit-box')) {
+		if (null != document.getElementById('djbmaintable')
+				&& 'null' != document.getElementById('djbmaintable')) {
+			var theTable = document.getElementById('djbmaintable');
+			theTable.className = "djbmainhidden";
+		}
+		document.body.style.overflow = 'hidden';
+		var thediv = document.getElementById('kno-audit-box');
+		thediv.style.display = "block";
+		thediv = document.getElementById('kno-audit-box-field');
+		thediv.style.display = "block";
+		document.getElementById('slNo').value = slNo;
+		document.getElementById('auditKno').value = kno;
+		document.getElementById('auditMtrNo').value = mtrNo;
+		document.getElementById('auditLastAuditDate').value = lastAuditDate;
+		document.getElementById('auditLastAuditStatus').value = lastAuditStatus;
+		document.getElementById('auditLastAuditRmrk').value = lastAuditRmrk;
+		document.getElementById('auditBillRound').value = billRound;
+		//alert('billRound '+billRound+' siteVistRequrd '+siteVistRequrd+' assignTo '+assignTo+' assignToFlg '+assignToFlg);
+		if(null !=siteVistRequrd && ('Y'==siteVistRequrd ||'y'==siteVistRequrd)){
+			document.getElementById('siteVisitRequiredYes').checked = true;
+		}else{
+			document.getElementById('siteVisitRequiredNo').checked = true;
+		}
+		if(assignToFlg && 'NA' != assignToFlg){
+			if('S'==Trim(assignToFlg)){
+				document.getElementById('assignedToSelf').checked = true;
+			}
+			if('M'==Trim(assignToFlg)){
+				document.getElementById('assignedToMR').checked = true;
+			}
+			disableSaveBtn();
+		}else{
+			enableSaveBtn();
+			var assignedTo = document.getElementsByName('assignedTo');
+			for(var i = 0; i < assignedTo.length; i++){
+				assignedTo[i].checked = false;
+			}
+		}
+		if(lastAuditStatus){
+			disableSaveBtn();
+		}
+		
+	}
+}
+function enableSaveBtn(){
+	document.getElementById('btnSaveKnoAuditDetail').disabled=false;
+}
+function disableSaveBtn(){
+		document.getElementById('btnSaveKnoAuditDetail').className = "disabledButton";
+		document.getElementById('btnSaveKnoAuditDetail').disabled=true;
+}
+
+function getKNOAuditDetailAjaxCall(kno){
+	isProcessing=true;			
+	document.getElementById('onscreenMessage').innerHTML="";
+	document.getElementById('onscreenMessage').title="Server Message.";
+	document.getElementById('hidAction').value="populateKnoAuditDetail";
+	var url= "consumptionVariationAuditAJax.action?hidAction=populateKnoAuditDetail&kno="+kno;				
+	//alert('url::'+url); 
+	var httpBowserObject=null;
+	if (window.ActiveXObject){                
+		httpBowserObject= new ActiveXObject("Microsoft.XMLHTTP");   
+	}else if (window.XMLHttpRequest){ 
+		httpBowserObject= new XMLHttpRequest();  
+	}else {                 
+		alert("Browser does not support AJAX...........");             
+		return;
+	} 
+	if (httpBowserObject != null) {
+		httpBowserObject.open("POST", url, true);
+		httpBowserObject.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		httpBowserObject.setRequestHeader("Connection", "close");
+		httpBowserObject.onreadystatechange = function(){
+			if(httpBowserObject.readyState == 4){
+				var  responseString= httpBowserObject.responseText;
+				if(null!=responseString){
+					document.getElementById('knoDetailDiv').innerHTML=responseString;							
+
+				}   
+			}     
+		};  
+		httpBowserObject.send(null);
+	}
+}
+
+
+function hideKNODetailAuditEditScreen() {
+	if (null != document.getElementById('kno-audit-box')
+			&& 'null' != document.getElementById('kno-audit-box')) {
+		var thediv = document.getElementById('kno-audit-box');
+		thediv.style.display = "none";
+		thediv = document.getElementById('kno-audit-box-field');
+		thediv.style.display = "none";
+		if (null != document.getElementById('djbmaintable')
+				&& 'null' != document.getElementById('djbmaintable')) {				
+			var theTable = document.getElementById('djbmaintable');
+			theTable.className = "djbmain";
+		}
+		document.body.style.overflow = 'auto';
+	}
+
+}
+function fnSaveKnoAuditDetails() {
+	document.getElementById('knoMsg').innerHTML ='';
+	var	billRound = '';
+	var kno = '';
+	document.getElementById('hidAction').value="updateKnoAuditDetail";
+	var url = "consumptionVariationAuditAJax.action?hidAction=updateKnoAuditDetail";
+	kno = document.getElementById('auditKno').value;
+	var siteVisitRequired = document.getElementsByName('siteVisitRequired');
+	var siteVisitRequiredValue;
+	for(var i = 0; i < siteVisitRequired.length; i++){
+	    if(siteVisitRequired[i].checked){
+	    	siteVisitRequiredValue = siteVisitRequired[i].value;
+	    }
+	}
+	var assignedTo = document.getElementsByName('assignedTo');
+	var assignedToValue = "METER READER";
+	var assignChecked = false;
+	for(var i = 0; i < assignedTo.length; i++){
+	    if(assignedTo[i].checked){
+	    	assignedToValue = assignedTo[i].value;
+	    	assignChecked = true;
+	    }
+	}
+	if('YES' == siteVisitRequiredValue && false == assignChecked){
+		document.getElementById('knoMsg').innerHTML ="<font color='red' size='2'><b>Please Select Assigned To option to proceed</b></font>";
+		return false;
+	}
+	billRound = document.getElementById('auditBillRound').value;
+	var dataStr="{\"JsonList\":[";
+	dataStr += "{\"kno\":\""+kno+"\",";
+	dataStr += "\"siteVistRequrd\":\""+siteVisitRequiredValue+"\",";
+	dataStr += "\"billRound\":\""+billRound+"\",";
+	dataStr += "\"assignTo\":\""+assignedToValue+"\"}";
+	dataStr+="]}";
+	url += "&data="
+	url += dataStr;
+	//alert('Kno Audit Url is :: '+url);
+	assignedToValue = "";
+	msg="Are You Sure You Want to Save the Audit Details?\nClick OK to continue else Cancel.";
+		if(confirm(msg)){
+			var httpBowserObject = null;
+			if (window.ActiveXObject) {
+				httpBowserObject = new ActiveXObject("Microsoft.XMLHTTP");
+			} else if (window.XMLHttpRequest) {
+				httpBowserObject = new XMLHttpRequest();
+			} else {
+				alert("Browser does not support AJAX...........");
+				return;
+			}
+			if (httpBowserObject != null) {
+				hideScreen();
+				httpBowserObject.open("POST", url, true);
+				httpBowserObject.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				httpBowserObject.setRequestHeader("Connection", "close");
+				httpBowserObject.onreadystatechange = function() {
+					if (httpBowserObject.readyState == 4) {
+						var responseString = httpBowserObject.responseText;
+						if (null == responseString|| responseString.indexOf("ERROR:") > -1) {
+								showScreen();
+								document.getElementById('knoMsg').innerHTML = responseString;
+						}else {
+							showScreen();
+							hideKNODetailAuditEditScreen();
+							document.getElementById('trKNO'+rowNumber).innerHTML = kno;
+							document.getElementById('trNo'+rowNumber).style.backgroundColor="#34A90A";
+							if("YES" == siteVisitRequiredValue || "yes" == siteVisitRequiredValue){
+								document.getElementById('trAddFindings'+rowNumber).innerHTML = "<input type='button' name='btnAddFindings' id='btnAddFindings' value='ADD FINDINGS' onclick=\"javascript:gotoAddAuditFindings('"+kno+"','"+billRound+"',"+rowNumber+");\"/>";
+								var today = new Date();
+								 var dd = today.getDate();
+								 var mm = today.getMonth()+1; //January is 0!
+								 var yyyy = today.getFullYear();
+								 if(dd<10){
+								    dd='0'+dd;
+								  } 
+								  if(mm<10){
+								        mm='0'+mm;
+								  } 
+								  var today = dd+'-'+mm+'-'+yyyy;
+								  document.getElementById('trAuditDate'+rowNumber).innerHTML = today;
+								  document.getElementById('onscreenMessage').innerHTML = responseString+" <font color='#33CC33'><b>For KNO "+kno+".</b></font>";
+							}else{
+								gotoAddAuditFindings(kno,billRound,rowNumber);
+							}
+						}
+					}
+				};
+				httpBowserObject.send(null);
+			}
+		}
+}
+
+</script>
+<div id="kno-audit-box" style="display: none;"
+	title="Press Esc to Go To Main Screen"></div>
+<div id="kno-audit-box-field" style="display: none;">
+<p align="right"><a href="#"
+	onclick="javascript:hideKNODetailAuditEditScreen();"> <img
+	src="/DataEntryApp/images/invalid.gif" border="0"
+	title="Click to Return To Main Screen" /> </a></p>
+<table align="center" border="0" width="100%" >
+	<tr>
+		<td align='center' colspan="5" nowrap><font size="2" color="#33CCCC"><strong>KNO Details For Consumption Variation Audit</strong></font></td>
+	</tr>
+	<tr>
+		<td align='left' colspan="5" id="knoMsg" nowrap>&nbsp;</td>
+	</tr>
+	<tr><td align='right'><font size="2" color="black"><strong>Serial No.</strong></font></td>
+		<td align='left' colspan="2"><input type="text"  name="slNo" id="slNo" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+		<td align='right'><font size="2" color="black"><strong>KNO.</strong></font></td>
+		<td align='left'><input type="text"  name="auditKno" id="auditKno" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+	</tr>
+	<tr>
+		<td align='right'><font size="2" color="black"><strong>Meter No.</strong></font></td>
+		<td align='left' colspan="2"><input type="text"  name="auditMtrNo" id="auditMtrNo" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+		<td align='right'><font size="2" color="black"><strong>Last Audit Date.</strong></font></td>
+		<td align='left'><input type="text"  name="auditLastAuditDate" id="auditLastAuditDate" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+	</tr>
+	<tr>
+		<td align='right'><font size="2" color="black"><strong>Last Audit Status.</strong></font></td>
+		<td align='left' colspan="2"><input type="text"  name="auditLastAuditStatus" id="auditLastAuditStatus" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+		<td align='right'><font size="2" color="black"><strong>Last Audit Remarks.</strong></font></td>
+		<td align='left'><input type="text"  name="auditLastAuditRmrk" id="auditLastAuditRmrk" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+	</tr>
+	<tr>
+	<td><input type="hidden"  name="auditBillRound" id="auditBillRound" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+	</tr>
+</table>
+<div id="knoDetailDiv"></div>
+<table align="center" border="0" width="100%">
+<tr>
+<td align='left'>&nbsp;</td>
+</tr>
+<tr>
+	<td align='right'><font size="2" color="black">Site Visit Required</font><sup><font color="red">*</font></sup></td>
+	<td align='right'><input type="radio" name="siteVisitRequired" id="siteVisitRequiredYes" value="YES">YES</td>
+	<td align='left'><input type="radio" name="siteVisitRequired" id="siteVisitRequiredNo" value="NO">NO</td>
+</tr>
+<tr>
+	<td align='right'><font size="2" color="black">Assigned To</font><sup><font color="red">**</font></sup></td>
+	<td align='right'><input type="radio" name="assignedTo" id="assignedToSelf" value="self">Self</td>
+	<td align='left'><input type="radio" name="assignedTo" id="assignedToMR" value="MTRREADER">Meter Reader</td>
+</tr>
+<tr>
+<td align='left'>&nbsp;</td>
+</tr>
+<tr>
+	<td align='right'><input type="button" name="btnBackMainScreen"
+			id="btnBackMainScreen" value=" Back " class="groovybutton"
+			onclick="hideKNODetailAuditEditScreen();" /></td>
+	<td align='left'>&nbsp;</td>
+	<td align='left'><input type="button" name="btnSaveKnoAuditDetail"
+			id="btnSaveKnoAuditDetail" value=" Save & Continue " class="groovybutton"
+			onclick="fnSaveKnoAuditDetails();" /></td>
+</tr>
+<tr>
+<td align='left'>&nbsp;</td>
+</tr>
+<tr>
+	<td align='right' colspan ="3" nowrap><sup><font color="red">*</font></sup>&nbsp;Marked
+		Fields are Mandatory<br><sup><font color="red">**</font></sup>&nbsp;Marked
+		Fields are Conditional Mandatory</td>
+</tr>
+</table>
+</div>

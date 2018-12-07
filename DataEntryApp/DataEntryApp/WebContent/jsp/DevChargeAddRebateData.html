@@ -1,0 +1,242 @@
+<style>
+
+#rebateAdd-box {
+		z-index: 500;
+		filter: alpha(opacity=50); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+		-moz-opacity: .50; /*older Mozilla*/
+		-khtml-opacity: 0.5;   /*older Safari*/
+		opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#000000;
+		padding-top:100px;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden;overflow-y:auto; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+
+#rebateAdd-box-field {
+		z-index: 600;		
+		background-color:#fff;
+		border:5px solid #33CCCC;
+		width:50%; 
+		/*height:50%;*/
+		align:center;
+		valign:middle;
+		color:#000;
+		position:absolute; 
+		top:33%; 
+		left:25%;
+		text-align:center;
+		/* Firefox */
+	    display:-moz-box;
+	    -moz-box-pack:center;
+	    -moz-box-align:center;
+	
+	    /* Safari and Chrome */
+	    display:-webkit-box;
+	    -webkit-box-pack:center;
+	    -webkit-box-align:center;
+	
+	    /* W3C */
+	    display:box;
+	    box-pack:center;
+	    box-align:center;		
+}
+</style>
+<script>
+    var notifyDateRebate='';
+	function popUpAddRebateMasterData(notificationDate) {
+		window.scrollTo(0,0);	
+		if (null != document.getElementById('rebateAdd-box')
+				&& 'null' != document.getElementById('rebateAdd-box')) {
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmainhidden";
+			}
+			document.body.style.overflow = 'hidden';
+			var thediv = document.getElementById('rebateAdd-box');
+			thediv.style.display = "block";
+			thediv.style.height=$( document ).height();
+			thediv = document.getElementById('rebateAdd-box-field');
+			//$('rebateAdd-box-field').offset({ top: 10, left: 30 });
+			thediv.style.display = "block";
+			document.getElementById('rebateTypeRow').value="";
+			document.getElementById('rebatePercentageRow').value="";
+			document.getElementById('rebateFlatRateRow').value="";
+			document.getElementById('rebateStartDateRow').value="";
+			document.getElementById('rebateEndDateRow').value="";
+			notifyDateRebate=notificationDate;
+		   }
+	  }
+	function hideRebateAddDataScreen() {
+		if (null != document.getElementById('rebateAdd-box')
+				&& 'null' != document.getElementById('rebateAdd-box')){
+			var thediv = document.getElementById('rebateAdd-box');
+			thediv.style.display = "none";
+			thediv = document.getElementById('rebateAdd-box-field');
+			thediv.style.display = "none";
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {				
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmain";
+			}
+			document.body.style.overflow = 'auto';
+		}
+	}
+	function addRebateDetails(){
+		document.getElementById('rebateAddMsg').innerHTML="";
+		var rebateTypeRow = document.getElementById('rebateTypeRow').value;
+		var rebatePercentageRow = document.getElementById('rebatePercentageRow').value;
+		var rebateFlatRateRow = document.getElementById('rebateFlatRateRow').value;
+		var rebateStartDateRow = document.getElementById('rebateStartDateRow').value;
+		var rebateEndDateRow = document.getElementById('rebateEndDateRow').value;
+		if(null==rebateTypeRow || rebateTypeRow.length<=0 || rebateTypeRow=='Please Select'){
+			document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Rebate Type is Mandatory.</b></font>';
+			return false;
+		}	
+		if(null!=rebateTypeRow && rebateTypeRow=="<%=DJBConstants.DEV_CHRG_FLAT_REBATE_CD %>"){
+				if(null==rebateFlatRateRow || rebateFlatRateRow==''){
+					document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Please Provide Rebate Flat Rate.</b></font>';
+					return false;
+				}
+			}else if(null!=rebateTypeRow && rebateTypeRow=="<%=DJBConstants.DEV_CHRG_PERCENTAGE_REBATE_CD %>"){
+				if(null==rebatePercentageRow || rebatePercentageRow==''){
+					document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Please Provide Rebate Percentage.</b></font>';
+					return false;
+				}
+			}
+		if(null==rebateStartDateRow || rebateStartDateRow.length<=0 || ''==rateStartDateRow){
+			document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Rebate Start Date is Mandatory.</b></font>';
+			return false;
+		}
+		if(null==rebateEndDateRow || rebateEndDateRow.length<=0 || ''==rateStartDateRow){
+			document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Rebate End Date is Mandatory.</b></font>';
+			return false;
+		}
+		var splitStartDate = rebateStartDateRow.split('/');
+		var splitEndDate = rebateEndDateRow.split('/');
+	    var startDateFormat = new Date (splitStartDate[2], splitStartDate[1] - 1,splitStartDate[0]);
+	    var endDateFormat = new Date (splitEndDate[2], splitEndDate[1] - 1,splitEndDate[0]);
+	    if(startDateFormat>endDateFormat){
+			document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Start date cannot be after End date.</b></font>';
+			return false;
+		}
+	    var splitNotifyDate = notifyDateRebate.split('/');
+		var notifyDateFormat = new  Date (splitNotifyDate[2], splitNotifyDate[1] - 1, splitNotifyDate[0]);
+		if(notifyDateFormat>startDateFormat){
+			document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Start date cannot be before Notification Date.</b></font>';
+			return false;
+		}
+		if(rebatePercentageRow!=null && rebatePercentageRow!='' && rebatePercentageRow.length>0 && !validateRate('rebatePercentageRow', 'Rebate Percentage', 'rebateAddMsg')){
+			return false;
+		}
+		if(rebateFlatRateRow!=null && rebateFlatRateRow!='' && rebateFlatRateRow.length>0&& !validateRate('rebateFlatRateRow', 'Rebate Flat Rate', 'rebateAddMsg')){
+			return false;
+		}
+		document.body.style.overflow = 'auto';
+		//saveRebateMasterDataRow(rebateTypeRow,rebatePercentageRow,rebateFlatRateRow,rebateStartDateRow,rebateDocRow,
+		//		rebateEndDateRow);
+		saveRebateMasterDataRow(rebateTypeRow,rebatePercentageRow,rebateFlatRateRow,rebateStartDateRow,
+				rebateEndDateRow);
+	}
+	function checkVal(e){
+	    try {
+	        var unicode=e.charCode? e.charCode : e.keyCode;
+	            if (unicode!=8){ 
+	                if (unicode<48||unicode>57) 
+	                return false ;
+				}          
+	        }catch (e) {
+    	}    
+	}
+	function validateRebateTypeRow(){
+		document.getElementById('rebateAddMsg').innerHTML="";
+		var rebateTypeRow = document.getElementById('rebateTypeRow').value;
+		var rebatePercentageRow = document.getElementById('rebatePercentageRow').value;
+		var rebateFlatRateRow = document.getElementById('rebateFlatRateRow').value;
+		if(null==rebateTypeRow || rebateTypeRow.length<=0 || rebateTypeRow=='Please Select'){
+			document.getElementById('rebateAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Rebate Type is Mandatory.</b></font>';
+			return false;
+		}
+		if(null!=rebateTypeRow && rebateTypeRow=='<%=DJBConstants.DEV_CHRG_FLAT_REBATE_CD %>'){
+			document.getElementById('rebatePercentageRow').value='';
+			document.getElementById('rebatePercentageRow').disabled=true;
+			document.getElementById('rebateFlatRateRow').disabled=false;
+		}else if(null!=rebateTypeRow && rebateTypeRow=='<%=DJBConstants.DEV_CHRG_PERCENTAGE_REBATE_CD %>'){
+			document.getElementById('rebateFlatRateRow').value='';
+			document.getElementById('rebateFlatRateRow').disabled=true;
+			document.getElementById('rebatePercentageRow').disabled=false;
+		}
+	}
+</script>
+<div id="rebateAdd-box" style="display: none;"
+	title="Press Esc to Go To Main Screen"></div>
+<div id="rebateAdd-box-field" style="display: none;">
+<p align="right"><a href="#"
+	onclick="javascript:hideRebateAddDataScreen();"> <img
+	src="/DataEntryApp/images/invalid.gif" border="0"
+	title="Click to Return To Main Screen" /> </a></p>
+<font color='LightSeaGreen' size="2"><strong>Add Rebate Details</strong></font>
+<br></br>
+<table align="center" border="0" width="100%">
+    <tr>
+		<td align='left' colspan="3" id="rebateAddMsg" nowrap>&nbsp;</td>
+	</tr>
+	<tr>
+	  <td align='right' nowrap>
+		&nbsp;Rebate Type<sup><font color="red">*</font></sup></td>
+		<td align='left'>&nbsp;
+		<s:select list="#session.RebateTypeListMap" headerKey=""
+		headerValue="Please Select" cssClass="selectbox"
+		theme="simple" name="rebateTypeRow" id="rebateTypeRow"
+		onchange="validateRebateTypeRow();" />
+		<!-- <select class="selectbox" id="rebateTypeRow" onchange="validateRebateTypeRow();">
+		     <option value="Please Select">Please Select</option>
+             <option value="F">Flat</option>
+             <option value="P">Percentage</option></select>  --> </td>
+	    <td align='right' nowrap>Rebate Percentage</td>
+		<td align='left'>&nbsp;<input type="text" disabled="disabled" name="rebatePercentageRow" id="rebatePercentageRow" onpaste='return false' onkeypress='return checkValWithDot(event)' /></td>
+		
+	</tr>
+	<tr>
+	    <td align='right' nowrap>Start Date<sup><font color="red">*</font></sup></td>
+		<td align='left'>&nbsp;<input type="text" name="rebateStartDateRow" id="rebateStartDateRow" onpaste='return false' onfocus="showCalender('rebateStartDateRow');"/></td>
+	    <td align='right' nowrap>Rebate Flat Rate</td>
+		<td align='left'>&nbsp;<input type="text" disabled="disabled" name="rebateFlatRateRow" id="rebateFlatRateRow" onpaste='return false' onkeypress='return checkValWithDot(event)' /></td>
+		
+	</tr>
+	<tr>
+	    <td align='right' nowrap>End Date<sup><font color="red">*</font></sup></td>
+		<td align='left'>&nbsp;<input type="text" name="rebateEndDateRow" id="rebateEndDateRow" onpaste='return false' onfocus="showCalender('rebateEndDateRow');"/></td>
+	    <td align='right'>&nbsp;</td>
+	    <td align='left'>&nbsp;</td>
+	</tr>
+	<!-- <tr>
+	    <td align='right'>&nbsp;</td>
+	    <td align='left'>&nbsp;</td>
+	     <td align='right' nowrap>Rate Doc Proof</td>
+		<td align='left'>&nbsp;<input type="file" name="rebateDocRow" id="rebateDocRow" onpaste='return false'/></td> 
+	    <td align='right'>&nbsp;</td>
+	    <td align='left'>&nbsp;</td>
+	</tr> -->
+	<tr>
+	    <td align='left'>&nbsp;</td>
+	</tr>
+	<tr>
+	    <td align='right'>&nbsp;</td>
+		<td align='center'><input type="button" name="btnAddRebateDetails"
+			id="btnAddRebateDetails" value=" Save & Activate " class="groovybutton"
+			onclick="javascript:addRebateDetails();"/></td>
+		<td align='right'>&nbsp;</td>
+		<td align='left'>&nbsp;</td>
+	</tr>
+	<tr>
+	   <td align='left'>&nbsp;</td>
+	   <td align='right' colspan="3" nowrap><sup><font color="red">*</font></sup>&nbsp;Marked
+		Fields are Mandatory.</td>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+    </tr>
+</table>
+<br></br>
+</div>

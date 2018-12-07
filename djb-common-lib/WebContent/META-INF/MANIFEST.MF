@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Class-Path: 
+Specification-Title: djb-common-lib
+Specification-Version: 1.0
+Implementation-Title: DJB Common Jars Implementation
+Implementation-Version: 1.0
+Implementation-Vendor: Tata Consultancy Services Ltd.
+Extension-Name: djb-common-lib

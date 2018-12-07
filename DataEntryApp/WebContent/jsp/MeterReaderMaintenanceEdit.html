@@ -1,0 +1,926 @@
+<!-- 
+@history Arnab Nandy (1227971) on 08-06-2016 edited meter-reader-box-field class in CSS and HHD Id element
+		  for Modifying HHD ID Drop Down and related designs in Pop-up, according to JTrac DJB-4484 and 
+		  OpenProject#1230.
+ -->
+<style>
+/* Added By Matiur Rahman on 26-02-2013 Start*/
+#meter-reader-box {
+		z-index: 500;
+		filter: alpha(opacity=50); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+		-moz-opacity: .50; /*older Mozilla*/
+		-khtml-opacity: 0.5;   /*older Safari*/
+		opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#000000;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+
+#meter-reader-box-field {
+		z-index: 600;		
+		background-color:#fff;
+		border:5px solid #33CCCC;
+		/* Start : Added by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and related designs in  
+		Pop-up, according to JTrac DJB-4484 and OpenProject#1230
+		width:50%; */
+		width:68%; 
+		/* End : Added by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and related designs in  
+		Pop-up, according to JTrac DJB-4484 and OpenProject#1230 */
+		/*height:50%;*/
+		align:center;
+		valign:middle;
+		color:#000;
+		position:absolute; 
+		top:25%; 
+		/* Start : Added by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and related designs in  
+		Pop-up, according to JTrac DJB-4484 and OpenProject#1230 */
+		left:18%;
+		/* End : Added by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and related designs in  
+		Pop-up, according to JTrac DJB-4484 and OpenProject#1230 */
+		text-align:center;
+		/* Firefox */
+	    display:-moz-box;
+	    -moz-box-pack:center;
+	    -moz-box-align:center;
+	
+	    /* Safari and Chrome */
+	    display:-webkit-box;
+	    -webkit-box-pack:center;
+	    -webkit-box-align:center;
+	
+	    /* W3C */
+	    display:box;
+	    box-pack:center;
+	    box-align:center;		
+}
+</style>
+<script>	
+
+	function resizeDiv() {
+		var vpw = $(document).width();
+		var vph = $(document).height();
+		$("#meter-reader-box").css({"height": vph + 'px'});
+		//$("body").css("overflow-x", "hidden");
+	}
+	 
+	
+	var isPopUp = false;
+	function popupMeterReaderMaintenanceEditScreen() {
+		window.scrollTo(0,0);
+		if (null != document.getElementById('meter-reader-box')
+				&& 'null' != document.getElementById('meter-reader-box')) {
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmainhidden";
+			}
+			var thediv = document.getElementById('meter-reader-box');
+			thediv.style.display = "block";
+			thediv = document.getElementById('meter-reader-box-field');
+			thediv.style.display = "block";
+			document.getElementById('bypassFromDate').disabled=true;
+			document.getElementById('bypassToDate').disabled=true;
+			isProcessing=false;	
+			document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Delete \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+			//document.getElementById('meterReaderZone').disabled=false;
+			//document.getElementById('meterReaderID').disabled=false;
+			document.getElementById('meterReaderName').disabled=false;
+			document.getElementById('meterReaderEmployeeID').disabled=false;
+			document.getElementById('meterReaderMobileNo').disabled=false;
+			document.getElementById('meterReaderEmail').disabled=false;
+			document.getElementById('meterReaderDesignation').disabled=false;
+			//Added by Rajib as per JTrac DJB- supervisor_cd,hhd_id,active_inactive_reason,is_active,zro_cd
+			//supervisorEmpId hhdId activeInactiveRemark MeterReaderStatus meterReaderZroCd
+			document.getElementById('supervisorEmpId').disabled=false;
+			document.getElementById('hhdId').disabled=false;
+			document.getElementById('activeInactiveRemark').disabled=false;
+			document.getElementById('MeterReaderStatus').disabled=false;
+			document.getElementById('meterReaderZroCd').disabled=false;
+			document.getElementById('bypass').style.display='none'; 
+			if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+				document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";		
+				document.getElementById('btnSpanReset').innerHTML="<input type=\"button\" name=\"btnReset\"	id=\"btnReset\" value=\" Reset \" class=\"groovybutton\" onclick=\"resetMeterReaderDetails();\" />";
+			}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+				document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+				document.getElementById('btnSpanReset').innerHTML="&nbsp;";
+			}else if(document.getElementById('popUpPurpose').value=='bypassMeterReader'){
+				document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Bypass \" class=\"groovybutton\" onclick=\"bypassMeterReaderDetails();\" />";
+				document.getElementById('btnSpanReset').innerHTML="&nbsp;";
+				//document.getElementById('meterReaderZone').disabled=true;
+				document.getElementById('meterReaderID').disabled=true;
+				document.getElementById('meterReaderName').disabled=true;
+				document.getElementById('meterReaderEmployeeID').disabled=true;
+				document.getElementById('meterReaderMobileNo').disabled=true;
+				document.getElementById('meterReaderEmail').disabled=true;
+				document.getElementById('meterReaderDesignation').disabled=true;
+				//Added by Rajib as per JTrac DJB- supervisor_cd,hhd_id,active_inactive_reason,is_active,zro_cd
+				document.getElementById('supervisorEmpId').disabled=true;
+				document.getElementById('hhdId').disabled=true;
+				document.getElementById('activeInactiveRemark').disabled=true;
+				document.getElementById('MeterReaderStatus').disabled=true;
+				document.getElementById('meterReaderZroCd').disabled=true;
+				document.getElementById('bypassFromDate').disabled=false;
+				document.getElementById('bypassToDate').disabled=false;
+				document.getElementById('bypass').style.display="block";
+			}
+			if(Trim(document.getElementById('meterReaderName').value)=='DJB' &&document.getElementById('popUpPurpose').value!='addMeterReader'){
+				document.getElementById('meterReaderName').disabled=true;
+			}
+			document.getElementById('hiddenName').value=document.getElementById('meterReaderName').value;
+			resizeDiv();
+		}
+	}
+	function hideMeterReaderMaintenanceEditScreen() {
+		if (null != document.getElementById('meter-reader-box')
+				&& 'null' != document.getElementById('meter-reader-box')) {
+			var thediv = document.getElementById('meter-reader-box');
+			thediv.style.display = "none";
+			thediv = document.getElementById('meter-reader-box-field');
+			thediv.style.display = "none";
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {				
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmain";
+			}
+			document.getElementById('popupMsg').innerHTML="&nbsp;";
+		}
+		if(isModified){
+			fnRefreshSearch();
+		}
+
+	}
+	function resetMeterReaderDetails(){
+		//document.getElementById('meterReaderZone').value="";
+		document.getElementById('meterReaderID').value="";
+		document.getElementById('meterReaderName').value="";
+		document.getElementById('meterReaderEmployeeID').value="";
+		document.getElementById('meterReaderMobileNo').value="";
+		document.getElementById('meterReaderEmail').value="";
+		document.getElementById('meterReaderDesignation').value="";
+		
+		document.getElementById('supervisorEmpId').value="";
+		document.getElementById('hhdId').value="";
+		document.getElementById('activeInactiveRemark').value="";
+		document.getElementById('MeterReaderStatus').value="Y";
+		document.getElementById('meterReaderZroCd').value="";
+		
+		document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+		resetMRMsg();		
+	}
+	function resetMRMsg(){
+		document.getElementById('popupMsg').innerHTML="&nbsp;";
+	}
+	function validateEmail(obj){
+		var email=obj.value;	
+		if(email.length>0){
+			var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			var isValid= re.test(email);
+			if (!isValid){
+				if(document.getElementById('popupMsg')){
+					document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'>Please Enter a valid Email Id.</font>";
+				}
+				obj.focus();
+				return false;
+		  	}else{
+		  		if(document.getElementById('popupMsg')){
+					document.getElementById('popupMsg').innerHTML = "";
+				}
+				return true;
+			}
+		}
+	}
+	function validateMobileNo(obj){
+		var mobileNo=Trim(obj.value);
+		if(mobileNo.length>0){			
+			if (isNaN(mobileNo)||parseInt(mobileNo)<1000000000 ||parseInt(mobileNo)>=10000000000){
+				if(document.getElementById('popupMsg')){
+					document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'>Please Enter a 10 digits valid Mobile No.</font>";
+				}
+				obj.focus();
+				return false;
+		  	}else{
+		  		if(document.getElementById('popupMsg')){
+					document.getElementById('popupMsg').innerHTML = "";
+				}
+				return true;
+			}
+		}
+	}
+	function fnValidate(){
+		if(''==Trim(document.getElementById('meterReaderZroCd').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Select a ZRO Location</font>";
+			document.getElementById('meterReaderZroCd').focus();
+			return false;		
+		}
+		
+		if(''==Trim(document.getElementById('meterReaderName').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Meter Reader Name</font>";
+			document.getElementById('meterReaderName').focus();
+			return false;
+		}
+		/*if(''==Trim(document.getElementById('meterReaderID').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Meter Reader Code</font>";
+			document.getElementById('meterReaderID').focus();
+			return;		
+		}*/
+		if(''==Trim(document.getElementById('meterReaderEmployeeID').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Meter Reader Employee ID</font>";
+			document.getElementById('meterReaderEmployeeID').focus();
+			return false;
+		}
+		/*
+		if(''==Trim(document.getElementById('meterReaderMobileNo').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Meter Reader Mobile No.</font>";
+			document.getElementById('meterReaderMobileNo').focus();
+			return false;
+		}*/
+		if(''!=Trim(document.getElementById('meterReaderMobileNo').value) &&!validateMobileNo(document.getElementById('meterReaderMobileNo'))){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Valid Mobile No</font>";
+			document.getElementById('meterReaderMobileNo').focus();
+			return false;
+		}
+		/*if(''==Trim(document.getElementById('meterReaderEmail').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Meter Reader Email</font>";
+			document.getElementById('meterReaderEmail').focus();
+			return false;
+		}*/
+		if(''!=Trim(document.getElementById('meterReaderEmail').value) &&!validateEmail(document.getElementById('meterReaderEmail'))){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Valid Email</font>";
+			document.getElementById('meterReaderEmail').focus();
+			return false;
+		}
+		/*if(''==Trim(document.getElementById('meterReaderDesignation').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Enter Meter Reader Designation</font>";
+			document.getElementById('meterReaderDesignation').focus();
+			return false;
+		}*/
+		if(''==Trim(document.getElementById('activeInactiveRemark').value)){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Select Active/Inactive Remark</font>";
+			document.getElementById('activeInactiveRemark').focus();
+			return false;
+		}
+		
+		return true;
+	}
+	function saveMeterReaderDetails(){
+		if(fnValidate()){
+			var confirmMsg="You have not Entered the ";
+			if(Trim(document.getElementById('meterReaderEmployeeID').value)==''){
+				confirmMsg+="Employee ID, "
+			}
+			if(Trim(document.getElementById('meterReaderMobileNo').value)==''){
+				confirmMsg+="Mobile No, "
+			}
+			if(Trim(document.getElementById('meterReaderEmail').value)==''){
+				confirmMsg+="Email, "
+			}
+			if(Trim(document.getElementById('meterReaderDesignation').value)==''){
+				confirmMsg+="Designation, "
+			}
+			if(Trim(document.getElementById('hhdId').value)==''){
+				confirmMsg+="HHD Id, "
+			}
+			if(confirmMsg=='You have not Entered the '){
+				confirmMsg="Are you Sure You want to Add the New Meter Reader details?\n"
+			}else{
+				confirmMsg+="\nAre you Sure You want to Add the New Meter Reader details without entering the fields?\n"
+			}
+			confirmMsg+="If You are Sure click OK else Cancel."
+			if(!confirm(confirmMsg)){
+				return;
+			}
+			document.getElementById('popupMsg').innerHTML="&nbsp;";					
+			saveMeterReaderDetailsAjaxCall();		
+		}
+	}
+	function updateMeterReaderDetails(){
+		if(fnValidate()){
+			var confirmMsg="";
+			confirmMsg+="Are you Sure You want to Update Meter Reader details?\n"
+			confirmMsg+="If You are Sure click OK else Cancel."
+			if(!confirm(confirmMsg)){
+				return;
+			}
+			document.getElementById('popupMsg').innerHTML="&nbsp;";					
+			saveMeterReaderDetailsAjaxCall();		
+		}
+	}
+	//Added by Rajib as per JTrac DJB-
+	function bypassMeterReaderDetails(){
+		if(fnValidate()){
+			var bypassFromdate=document.getElementById('bypassFromdate').value;
+			var bypassTodate=document.getElementById('bypassTodate').value;
+			if ((null == bypassFromdate && ''== bypassFromdate) || (null != bypassTodate && ''== bypassTodate)){
+				document.getElementById('popupMsg').innerHTML="<font color='red'>ByPass from date and bypass to date are mandatory.</font>";	
+				return;
+				}
+			if (DateDifference(bypassFromdate,bypassTodate)<0){
+				document.getElementById('popupMsg').innerHTML="<font color='red'>Please select Bypass to date greater than or equal to Bypass from date</font>";	
+				return;
+				}
+			var confirmMsg="";
+			confirmMsg+="Are you Sure You want to Bypass Meter Reader from No. of Records Validation!\n"
+
+			confirmMsg+="If You are Sure click OK else Cancel."
+			if(!confirm(confirmMsg)){
+				return;
+			}
+			document.getElementById('popupMsg').innerHTML="&nbsp;";					
+			bypassMeterReaderDetailsAjaxCall();	
+		}
+	}
+	
+	function deleteMeterReaderDetails(){
+		if(fnValidate()){
+			if(!confirm('Are you Sure You want to Delete Meter Reader details?\nIf You are Sure click OK else Cancel.')){
+				return;
+			}
+			document.getElementById('popupMsg').innerHTML="&nbsp;";					
+			saveMeterReaderDetailsAjaxCall();		
+		}
+	}
+	function saveMeterReaderDetailsAjaxCall(){
+		var requestQueryString="";
+		requestQueryString+="hidAction="+Trim(document.getElementById('popUpPurpose').value);
+		//requestQueryString+="&meterReaderZone="+Trim(document.getElementById('meterReaderZone').value);
+		requestQueryString+="&meterReaderZroCd="+Trim(document.getElementById('meterReaderZroCd').value);
+		requestQueryString+="&meterReaderName="+Trim(document.getElementById('meterReaderName').value);
+		requestQueryString+="&meterReaderID="+Trim(document.getElementById('meterReaderID').value);
+		requestQueryString+="&meterReaderEmployeeID="+Trim(document.getElementById('meterReaderEmployeeID').value);
+		requestQueryString+="&meterReaderMobileNo="+Trim(document.getElementById('meterReaderMobileNo').value);
+		requestQueryString+="&meterReaderEmail="+Trim(document.getElementById('meterReaderEmail').value);
+		requestQueryString+="&meterReaderDesignation="+Trim(document.getElementById('meterReaderDesignation').value);
+		
+		requestQueryString+="&supervisorEmpId="+Trim(document.getElementById('supervisorEmpId').value);
+		requestQueryString+="&hhdId="+Trim(document.getElementById('hhdId').value);
+		requestQueryString+="&activeInactiveRemark="+Trim(document.getElementById('activeInactiveRemark').value);
+		requestQueryString+="&MeterReaderStatus="+Trim(document.getElementById('MeterReaderStatus').value);
+		
+		isProcessing=true;
+		var url= "meterReaderMaintenanceAJax.action?"+requestQueryString;				
+		//alert('url::'+url); 
+		var httpBowserObject=null;
+		if (window.ActiveXObject){                
+			httpBowserObject= new ActiveXObject("Microsoft.XMLHTTP");   
+		}else if (window.XMLHttpRequest){ 
+			httpBowserObject= new XMLHttpRequest();  
+		}else {                 
+			alert("Browser does not support AJAX...........");             
+			return;
+		} 
+		if (httpBowserObject != null) {	
+			document.getElementById('btnSpanSubmit').innerHTML="<img src=\"/DataEntryApp/images/load.gif\" width=\"25\" border=\"0\" title=\"Loading\"/>";			            
+			httpBowserObject.open("POST", url, true);
+			httpBowserObject.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			httpBowserObject.setRequestHeader("Connection", "close");
+			httpBowserObject.onreadystatechange = function(){
+				if(httpBowserObject.readyState == 4){
+					var  responseString= httpBowserObject.responseText;
+					if(null!=responseString){
+						if (responseString.indexOf('<script') == -1) {
+							if (responseString.indexOf("ERROR:") > -1) {
+								document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>ERROR: There was a problem, Please retry. </b></font>";
+								if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+								}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+								}else if(document.getElementById('popUpPurpose').value=='deleteMeterReader'){
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Delete \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+								}	
+							}else{
+								if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+									document.getElementById('popupMsg').innerHTML="<font color='green' size='2'><b>Meter Reader Details Successfully Added.</b></font>";
+									document.getElementById('meterReaderID').value=responseString;
+								}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+									document.getElementById('popupMsg').innerHTML="<font color='green' size='2'><b>Meter Reader Details Successfully Updated.</b></font>";
+								}else if(document.getElementById('popUpPurpose').value=='deleteMeterReader'){
+									if(responseString.indexOf("SUCCESS") > -1){
+										document.getElementById('popupMsg').innerHTML="<font color='green' size='2'><b>Meter Reader Details Successfully Deleted.</b></font>";
+									}else{
+										document.getElementById('popupMsg').innerHTML=responseString;
+									}
+								}								
+								document.getElementById('btnSpanSubmit').innerHTML="";
+								isModified=true;								
+							}
+						}else {
+							document.getElementById('onscreenMessage').innerHTML = responseString;
+							if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+								document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+							}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+								document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+							}else if(document.getElementById('popUpPurpose').value=='deleteMeterReader'){
+								document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Delete \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+							}								
+						}
+						isProcessing=false;
+					}   
+				}     
+			};  
+			httpBowserObject.send(null);
+		}
+	}
+	//Added by Rajib as per Jtrac DJB- 4080 on 29-SEP-2015
+	
+	function bypassMeterReaderDetailsAjaxCall(){
+		var requestQueryString="";
+		requestQueryString+="hidAction="+Trim(document.getElementById('popUpPurpose').value);
+		requestQueryString+="&meterReaderID="+Trim(document.getElementById('meterReaderID').value);
+		requestQueryString+="&bypassFromdate="+Trim(document.getElementById('bypassFromdate').value);
+		requestQueryString+="&bypassTodate="+Trim(document.getElementById('bypassTodate').value);
+		isProcessing=true;
+		var url= "meterReaderMaintenanceAJax.action?"+requestQueryString;				
+		//alert('url::'+url); 
+		var httpBowserObject=null;
+		if (window.ActiveXObject){                
+			httpBowserObject= new ActiveXObject("Microsoft.XMLHTTP");   
+		}else if (window.XMLHttpRequest){ 
+			httpBowserObject= new XMLHttpRequest();  
+		}else {                 
+			alert("Browser does not support AJAX...........");             
+			return;
+		} 
+		if (httpBowserObject != null) {	
+			document.getElementById('btnSpanSubmit').innerHTML="<img src=\"/DataEntryApp/images/load.gif\" width=\"25\" border=\"0\" title=\"Loading\"/>";			            
+			httpBowserObject.open("POST", url, true);
+			httpBowserObject.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			httpBowserObject.setRequestHeader("Connection", "close");
+			httpBowserObject.onreadystatechange = function(){
+				if(httpBowserObject.readyState == 4){
+					var  responseString= httpBowserObject.responseText;
+					if(null!=responseString){
+						if (responseString.indexOf('<script') == -1) {
+							if (responseString.indexOf("ERROR:") > -1) {
+								document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>ERROR: There was a problem, Please retry. </b></font>";
+								if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+								}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+								}else if(document.getElementById('popUpPurpose').value=='bypassMeterReader'){
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Bypass \" class=\"groovybutton\" onclick=\"bypassMeterReaderDetails();\" />";
+								}	
+							}else{
+								if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+									document.getElementById('popupMsg').innerHTML="<font color='green' size='2'><b>Meter Reader Details Successfully Added.</b></font>";
+									document.getElementById('meterReaderID').value=responseString;
+								}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+									document.getElementById('popupMsg').innerHTML="<font color='green' size='2'><b>Meter Reader Details Successfully Updated.</b></font>";
+								}else if(document.getElementById('popUpPurpose').value=='bypassMeterReader'){
+									if(responseString.indexOf("SUCCESS") > -1){
+										document.getElementById('popupMsg').innerHTML="<font color='green' size='2'><b>Meter Reader Successfully Bypassed.</b></font>";
+									}else{
+										document.getElementById('popupMsg').innerHTML=responseString;
+									}
+								}								
+								document.getElementById('btnSpanSubmit').innerHTML="";
+								isModified=true;								
+							}
+						}else {
+							document.getElementById('onscreenMessage').innerHTML = responseString;
+							if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+								document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+							}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+								document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+							}else if(document.getElementById('popUpPurpose').value=='bypassMeterReader'){
+								document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Bypass \" class=\"groovybutton\" onclick=\"bypassMeterReaderDetails();\" />";
+							}								
+						}
+						isProcessing=false;
+					}   
+				}     
+			};  
+			httpBowserObject.send(null);
+		}
+	}
+	
+	function fnPopulateSupervisorEmpIdNHhdList(zroCd,hhdId,isDirect){
+		//alert("zroCd>>"+zroCd+'>>hhdId>>'+hhdId+'>>isDirect>>'+isDirect);
+		if(hhdId==''&& document.getElementById('popUpPurpose').value=='editMeterReader' && document.getElementById('hhdId')){
+			hhdId=document.getElementById('hhdId').value;
+		}
+		if (zroCd != '') {
+			var meterReaderID='';
+			if(document.getElementById('meterReaderID')){
+				meterReaderID=document.getElementById('meterReaderID').value;
+			}
+			//hhdId=document.getElementById('hhdId').value;
+			var url = "meterReaderMaintenanceAJax.action?hidAction=populateSupervisorEmpList&meterReaderZroCd="
+					+ zroCd+"&hhdId="+hhdId+"&meterReaderID="+meterReaderID;
+			
+			var httpBowserObject = null;
+			if (window.ActiveXObject) {
+				httpBowserObject = new ActiveXObject("Microsoft.XMLHTTP");
+			} else if (window.XMLHttpRequest) {
+				httpBowserObject = new XMLHttpRequest();
+			} else {
+				alert("Browser does not support AJAX...........");
+				return;
+			}
+			if (httpBowserObject != null) {
+				//alert('url>>'+url);
+				httpBowserObject.open("POST", url, true);
+				httpBowserObject.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+				httpBowserObject.setRequestHeader("Connection", "close");
+				httpBowserObject.onreadystatechange = function() {
+					if (httpBowserObject.readyState == 4) {
+						var responseString = httpBowserObject.responseText;
+						// alert(httpBowserObject.responseText);
+						if (null == responseString
+								|| responseString.indexOf("ERROR:") > -1) {
+							document.getElementById('mrMessage').innerHTML = "<font color='red' size='2'><b>ERROR: No Supervisor found corresponding to the zro location. </b></font>";
+							document.getElementById('mrMessage').title = "";
+						} else {
+							//alert(supervisorEmpIdVar);
+							document.getElementById('supervisorEmpIdTd').innerHTML =  Trim(responseString.substring(responseString.indexOf("<SUP>") + 5, responseString.indexOf("</SUP>")));
+							document.getElementById('supervisorEmpId').value=supervisorEmpIdVar;
+							if(responseString.indexOf("<HHD>") > -1){
+								document.getElementById('hhdIdTD').innerHTML =  Trim(responseString.substring(responseString.indexOf("<HHD>") + 5, responseString.indexOf("</HHD>")));
+								if(hhdId!='NA'){
+									document.getElementById('hhdId').value=hhdId;
+								}
+							}
+						}
+					}					
+					if(!isDirect){
+						popupMeterReaderMaintenanceEditScreen();
+					}
+				};
+				httpBowserObject.send(null);
+			}
+		}else{
+			popupMeterReaderMaintenanceEditScreen();
+		}
+		
+	}
+	
+	//End: Added by Rajib as per Jtrac DJB- 4080 on 29-SEP-2015	
+	function fnDisableButton(){		
+		if(document.getElementById('btnSubmit')&&Trim(document.getElementById('meterReaderEmployeeID').value)==''){
+			document.getElementById('btnSubmit').disabled=true;
+		}
+	}
+	function fnEnableButton(){		
+		if(document.getElementById('btnSubmit')){
+			document.getElementById('btnSubmit').disabled=false;
+		}
+	}
+	function closeHistoryDetails(){
+		if (document.getElementById('searchHistoryDiv')) {
+			document.getElementById('searchHistoryDiv').style.display='none';
+			document.getElementById('viewHistory').style.display='none';
+			document.getElementById('searchResultLoading').style.display='none';
+			document.getElementById('searchResultDiv').style.display='block';
+		}
+	}
+	function validMeterReaderName(){
+		if(Trim(document.getElementById('meterReaderZroCd').value)==''){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Select a ZRO Location</font>";
+			return;
+		}	
+		if(document.getElementById('hiddenName').value!=document.getElementById('meterReaderName').value){	
+			if((Trim(document.getElementById('meterReaderName').value)!='' && Trim(document.getElementById('meterReaderEmployeeID').value)=='')||Trim(document.getElementById('meterReaderName').value)=='DJB'){
+				validMeterReaderDetailsAjaxCall();
+			}
+		}
+	}
+	function validMeterReaderNameForZone(){	
+		if(Trim(document.getElementById('meterReaderZroCd').value)!=''&& document.getElementById('hiddenName').value!=document.getElementById('meterReaderName').value){
+			if(document.getElementById('hiddenName').value!=document.getElementById('meterReaderName').value){
+				validMeterReaderDetailsAjaxCall();
+			}
+		}else if(Trim(document.getElementById('meterReaderZroCd').value)==''){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Select a ZRO Location</font>";
+		}
+	}
+	function validMeterReaderEmployeeID(){
+		if(Trim(document.getElementById('meterReaderZroCd').value)==''){
+			document.getElementById('popupMsg').innerHTML="<font color='red'>Please Select a ZRO Location</font>";
+			document.getElementById('meterReaderEmployeeID').value="";
+			return;
+		}
+		if(Trim(document.getElementById('meterReaderEmployeeID').value)!=''){
+			validMeterReaderDetailsAjaxCall();
+		}else if(Trim(document.getElementById('meterReaderName').value)!=''){
+			validMeterReaderDetailsAjaxCall();
+		}
+	}
+	function validMeterReaderDetailsAjaxCall(){
+		if(Trim(document.getElementById('meterReaderName').value)!=''||Trim(document.getElementById('meterReaderEmployeeID').value)!=''){
+			var requestQueryString="";
+			requestQueryString+="hidAction=validateMeterReader";
+			//requestQueryString+="&meterReaderZone="+Trim(document.getElementById('meterReaderZone').value);
+			requestQueryString+="&meterReaderZroCd="+Trim(document.getElementById('meterReaderZroCd').value);
+			requestQueryString+="&meterReaderName="+Trim(document.getElementById('meterReaderName').value);
+			//requestQueryString+="&meterReaderID="+Trim(document.getElementById('meterReaderID').value);
+			requestQueryString+="&meterReaderEmployeeID="+Trim(document.getElementById('meterReaderEmployeeID').value);
+			//requestQueryString+="&meterReaderMobileNo="+Trim(document.getElementById('meterReaderMobileNo').value);
+			//requestQueryString+="&meterReaderEmail="+Trim(document.getElementById('meterReaderEmail').value);
+			//requestQueryString+="&meterReaderDesignation="+Trim(document.getElementById('meterReaderDesignation').value);
+			//document.getElementById('popUpPurpose').value="";
+		//	alert(">>popUpPurpose before ajax call>>"+document.getElementById('popUpPurpose').value);
+			isProcessing=true;
+			var url= "meterReaderMaintenanceAJax.action?"+requestQueryString;				
+			//alert('url::'+url); 
+			var httpBowserObject=null;
+			if (window.ActiveXObject){                
+				httpBowserObject= new ActiveXObject("Microsoft.XMLHTTP");   
+			}else if (window.XMLHttpRequest){ 
+				httpBowserObject= new XMLHttpRequest();  
+			}else {                 
+				alert("Browser does not support AJAX...........");             
+				return;
+			} 
+			if (httpBowserObject != null) {	
+				document.getElementById('btnSpanSubmit').innerHTML="<img src=\"/DataEntryApp/images/load.gif\" width=\"25\" border=\"0\" title=\"Loading\"/>";			            
+				httpBowserObject.open("POST", url, true);
+				httpBowserObject.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				httpBowserObject.setRequestHeader("Connection", "close");
+				httpBowserObject.onreadystatechange = function(){
+					if(httpBowserObject.readyState == 4){
+						var  responseString= httpBowserObject.responseText;
+						var zroLoc='';
+						var hhdId='';
+						//alert(responseString);					
+						document.getElementById('meterReaderEmployeeID').disabled=false;
+						if(null!=responseString){
+							if (responseString.indexOf('<script') == -1) {
+								if (responseString.indexOf("ERROR:") > -1) {
+									document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>ERROR: There was a problem, Please retry. </b></font>";
+								}else if (responseString.indexOf("VALID") == -1) {
+									document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>Meter Reader Already Exists, Please Update if required. </b></font>";
+									zroLoc=responseString.substring(responseString
+											.indexOf("<ZONE>") + 6, responseString.indexOf("</ZONE>"));
+									document.getElementById('meterReaderZroCd').value=zroLoc;
+									document.getElementById('meterReaderID').value=responseString.substring(responseString
+											.indexOf("<MRCD>") + 6, responseString.indexOf("</MRCD>"));
+									document.getElementById('meterReaderName').value=responseString.substring(responseString
+											.indexOf("<NAME>") + 6, responseString.indexOf("</NAME>"));
+									document.getElementById('meterReaderMobileNo').value=responseString.substring(responseString
+											.indexOf("<MOBL>") + 6, responseString.indexOf("</MOBL>"));
+									document.getElementById('meterReaderEmail').value=responseString.substring(responseString
+											.indexOf("<MAIL>") + 6, responseString.indexOf("</MAIL>"));
+									document.getElementById('meterReaderDesignation').value=responseString.substring(responseString
+											.indexOf("<DESI>") + 6, responseString.indexOf("</DESI>"));
+									document.getElementById('meterReaderStatus').value=responseString.substring(responseString
+											.indexOf("<STAT>") + 6, responseString.indexOf("</STAT>"));
+									document.getElementById('activeInactiveRemark').value=responseString.substring(responseString
+											.indexOf("<REM>") + 5, responseString.indexOf("</REM>"));
+									supervisorEmpIdVar='';
+									supervisorEmpIdVar=responseString.substring(responseString.indexOf("<SUP>") + 5, responseString.indexOf("</SUP>"));
+									document.getElementById('supervisorEmpId').value=supervisorEmpIdVar;								
+									if(responseString.indexOf("<HHD>") > -1){
+									 	hhdId=responseString.substring(responseString.indexOf("<HHD>") + 5, responseString.indexOf("</HHD>"));
+									}
+									if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+										if(Trim(document.getElementById('meterReaderEmployeeID').value)!=''&&Trim(document.getElementById('meterReaderName').value)!='DJB'){
+											document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>Employee ID Already Exists ! </b></font>";
+											//fnPopulateSupervisorEmpIdNHhdList(zroLoc,hhdId,false);
+											//document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\" id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+											document.getElementById('btnSpanSubmit').innerHTML="";
+											document.getElementById('popUpPurpose').value="editMeterReader";
+										}else{
+											if(Trim(document.getElementById('meterReaderName').value)!='DJB'){											
+												document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>Name Already Exists, Enter Employee ID !. </b></font>";
+												document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" disabled=\"true\"/>";
+											}else{
+												document.getElementById('meterReaderEmployeeID').disabled=true;
+												document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>DJB Already Exists and Only One DJB as Meter Reader is Allowed !. </b></font>";
+												document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" disabled=\"true\"/>";
+											}
+										}
+									}else{
+										if(Trim(document.getElementById('meterReaderEmployeeID').value)!=''&& Trim(document.getElementById('meterReaderName').value)!='DJB'){
+											document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>Employee ID Already Exists ! </b></font>";
+											//fnPopulateSupervisorEmpIdNHhdList(zroLoc,hhdId,false);
+											//document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" disabled=\"true\"/>";
+											document.getElementById('btnSpanSubmit').innerHTML="";
+										}else{
+											if(Trim(document.getElementById('meterReaderName').value)!='DJB'){
+												document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>Name Already Exists, Enter Employee ID !. </b></font>";
+												document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+												document.getElementById('popUpPurpose').value="editMeterReader";
+											}else{
+												document.getElementById('meterReaderEmployeeID').disabled=true;
+												document.getElementById('popupMsg').innerHTML = "<font color='red' size='2'><b>DJB Already Exists and Only One DJB as Meter Reader is Allowed !. </b></font>";
+												document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" disabled=\"true\"/>";
+											}
+										}
+									}	
+								}else{
+									document.getElementById('popUpPurpose').value='addMeterReader'
+									fnEnableButton();
+									document.getElementById('meterReaderID').value='';
+									zroLoc=document.getElementById('meterReaderZroCd').value;
+									fnPopulateSupervisorEmpIdNHhdList(zroLoc,'',false);
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+								/*	alert(">>popUpPurpose>>"+document.getElementById('popUpPurpose').value);
+									if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+										alert("Inside addMeterReader if 1");
+										document.getElementById('meterReaderID').value='';
+										zroLoc=document.getElementById('meterReaderZroCd').value;
+										fnPopulateSupervisorEmpIdNHhdList(zroLoc,'',false);
+										document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Submit \" class=\"groovybutton\" onclick=\"saveMeterReaderDetails();\" />";
+									}else{
+										alert("Inside else addMeterReader 1");
+										document.getElementById('meterReaderID').value='';
+										zroLoc=document.getElementById('meterReaderZroCd').value;
+										fnPopulateSupervisorEmpIdNHhdList(zroLoc,hhdId,false);
+										document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+										document.getElementById('popUpPurpose').value="editMeterReader";
+									}
+									*/
+									resetMRMsg();
+								}
+							}else {
+								document.getElementById('onscreenMessage').innerHTML = responseString;
+								if(document.getElementById('popUpPurpose').value=='addMeterReader'){
+								//	alert("Inside last if");
+									document.getElementById('meterReaderID').value='';
+									zroLoc=document.getElementById('meterReaderZroCd').value;
+									fnPopulateSupervisorEmpIdNHhdList(zroLoc,'',false);
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+									document.getElementById('popUpPurpose').value="editMeterReader";
+								}else if(document.getElementById('popUpPurpose').value=='editMeterReader'){
+									//alert("Inside last else");
+									zroLoc=document.getElementById('meterReaderZroCd').value;
+									fnPopulateSupervisorEmpIdNHhdList(zroLoc,'',false);
+									document.getElementById('btnSpanSubmit').innerHTML="<input type=\"button\" name=\"btnSubmit\"	id=\"btnSubmit\" value=\" Update \" class=\"groovybutton\" onclick=\"updateMeterReaderDetails();\" />";
+								}									
+							}
+							isProcessing=false;
+						}   
+					}     
+				};  
+				httpBowserObject.send(null);
+			}
+		}
+	}
+	function fnCheckHHDId(){
+		if(document.getElementById('MeterReaderStatus').value!='Y'){
+			if(document.getElementById('hhdId')){
+				document.getElementById('hhdId').value="";
+				document.getElementById('hhdId').disabled=true;
+			}
+		}else{
+			document.getElementById('hhdId').disabled=false;
+		}
+	}
+</script>
+<div id="meter-reader-box" style="display: none;"
+	title="Press Esc to Go To Main Screen"></div>
+<div id="meter-reader-box-field" style="display: none;">
+<table align="center" border="0" width="100%">
+	<tr>
+		<td align='left' colspan="2" id="popupMsg" nowrap>&nbsp;</td>
+		<td align='right'><a href="#"
+			onclick="javascript:hideMeterReaderMaintenanceEditScreen();"> <img
+			src="/DataEntryApp/images/invalid.gif" border="0"
+			title="Click to Return To Main Screen" /> </a></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="3">
+		<fieldset><legend>Meter Reader Details</legend>
+		<table align="center" border="0" width="80%">
+			<tr>
+				<td align='right' nowrap>ZRO Location<sup><font
+					color="red">*</font></sup></td>
+				<td align='left'><s:select list="#session.ZROListMap"
+					headerKey="" headerValue="Please Select" cssClass="selectbox-long"
+					theme="simple" name="meterReaderZroCd" id="meterReaderZroCd"
+					onchange="fnPopulateSupervisorEmpIdNHhdList(this.value,'',true);validMeterReaderNameForZone();" /></td>
+				<td align='left'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='right' nowrap>Meter Reader Code<sup><font
+					color="red"></font></sup></td>
+				<td align='left' title="System generated Code"><input
+					type="text" name="meterReaderID" id="meterReaderID" maxlength="20"
+					style="text-align: left;" class="textbox" disabled="true" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='right' nowrap>Active<sup><font color="red">*</font></sup></td>
+				<td align='left' title="Meter Reader Status"><s:select
+					list="#session.ActiveInactiveListMap" cssClass="selectbox"
+					theme="simple" name="MeterReaderStatus" id="MeterReaderStatus"
+					onchange="fnCheckHHDId();" /></td>
+				<td align='left'>&nbsp;</td>
+
+			</tr>
+			<tr>
+				<td align='right' nowrap>Employee ID<sup><font
+					color="red">*</font></sup></td>
+				<td align='left'><input type="text"
+					name="meterReaderEmployeeID" id="meterReaderEmployeeID"
+					maxlength="8" style="text-align: left;" class="textbox"
+					onchange="validMeterReaderEmployeeID();" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='left' colspan='2' align='right'>Active/InActive
+				Remark <sup><font color="red">*</font></sup></td>
+				<td align='left'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='right' nowrap>Meter Reader Name<sup><font
+					color="red">*</font></sup></td>
+				<td align='left'><input type="text" name="meterReaderName"
+					id="meterReaderName" maxlength="50" style="text-align: left;"
+					class="textbox" onkeypress="return checkNameField(event);"
+					onfocus="fnDisableButton();" onblur="validMeterReaderName();" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='left'>&nbsp;</td>
+				<td align='left' title="Active/InActive Remark"><s:select
+					list="#session.MeterReaderStatusListMap" headerKey=""
+					headerValue="Please Select" cssClass="selectbox" theme="simple"
+					name="activeInactiveRemark" id="activeInactiveRemark"/></td>
+				<!-- Commented out by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and  
+				related designs in Pop-up, according to JTrac DJB-4484 and OpenProject#1230 
+				<td align='left'>&nbsp;</td> -->
+			</tr>
+			<tr>
+				<td align='right' nowrap>Mobile No<sup><font color="red"></font></sup></td>
+				<td align='left'><input type="text" name="meterReaderMobileNo"
+					id="meterReaderMobileNo" maxlength="10" style="text-align: left;"
+					class="textbox" onkeypress="return checkOnlyNumeric(event);"
+					onchange="validateMobileNo(this);" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='right' nowrap>HHD Id<sup><font color="red"></font></sup></td>
+				<!-- Start : Edited by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and related designs in  
+				Pop-up, according to JTrac DJB-4484 and OpenProject#1230 -->
+				<td align='left' id="hhdIdTD"><s:select
+					list="#session.HhdIdListMap" headerKey=""
+					headerValue="Please Select" name="hhdId" id="hhdId"
+					cssClass="selectbox-long" theme="simple" onchange="resetMRMsg();" /></td>
+				<!-- cssClass="selectbox" theme="simple" onchange="resetMRMsg();" /></td> 
+				End : Edited by Arnab Nandy (1227971) on 08-06-2016 for Modifying HHD ID Drop Down and related designs in  
+				Pop-up, according to JTrac DJB-4484 and OpenProject#1230 -->
+				<td align='left'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='right' nowrap>Email ID<sup><font color="red"></font></sup></td>
+				<td align='left'><input type="text" name="meterReaderEmail"
+					id="meterReaderEmail" maxlength="20" style="text-align: left;"
+					class="textbox" onchange="validateEmail(this);" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='left'>&nbsp;</td>
+				<td align='left'>&nbsp;</td>
+				<td align='left'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='right'
+					title="Please Select Meter Reader Designation from the Dropdown List"
+					nowrap>Designation<sup><font color="red"></font></sup></td>
+				<td align='left'><s:select
+					list="#session.MeterReaderDesignationListMap" headerKey=""
+					headerValue="Please Select" name="meterReaderDesignation"
+					id="meterReaderDesignation" cssClass="selectbox-long"
+					theme="simple" onchange="resetMRMsg();" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='right' nowrap><sup><font color="red"></font></sup></td>
+				<td align='left'>&nbsp;</td>
+				<td align='left'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='right'
+					title="Please Select Meter Reader Designation from the Dropdown List"
+					nowrap>Supervisor<sup><font color="red"></font></sup></td>
+				<td align='left' title="Supervisor EmpId" id="supervisorEmpIdTd"><s:select
+					list="#session.SupervisorEmpIdListMap" headerKey=""
+					headerValue="Please Select" name="supervisorEmpId"
+					id="supervisorEmpId" cssClass="selectbox-long" theme="simple"
+					onchange="" disabled="true" /></td>
+				<td align='left'>&nbsp;</td>
+				<td align='right' nowrap><sup><font color="red"></font></sup></td>
+				<td align='left'>&nbsp;</td>
+				<td align='left'>&nbsp;</td>
+			</tr>
+			<tr id="bypass">
+				<td align='right' title="Please Select Bypass from Date" nowrap>
+				Bypass from <font color="red">*</font></sup></td>
+				<td align='left'><s:textfield cssClass="textbox" theme="simple"
+					name="bypassFromDate" id="bypassFromDate" maxlength="10"
+					disabled="true" /><font size="0.5"></font></td>
+				<td align='left'></td>
+				<td align='right' title="Please Select Bypass to Date" nowrap>
+				Bypass To <font color="red">*</font></sup></td>
+				<td align='left'><s:textfield cssClass="textbox" theme="simple"
+					name="bypassToDate" id="bypassToDate" maxlength="10"
+					disabled="true" /><font size="0.5"></font></td>
+				<td align='left'>&nbsp;</td>
+			</tr>
+
+		</table>
+		</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td align='right' id="btnSpanReset" width="40%">&nbsp;</td>
+		<td align='left' id="btnSpanSubmit" width="40%">&nbsp;</td>
+		<td align='left'>&nbsp;<input type="hidden" name="popUpPurpose"
+			id="popUpPurpose" /><input type="hidden" name="hiddenName"
+			id="hiddenName" /></td>
+	</tr>
+	<tr>
+		<td align='right' colspan="3" nowrap><sup><font color="red">*</font></sup>&nbsp;Marked
+		Fields are Mandatory.</td>
+	</tr>
+</table>
+</div>

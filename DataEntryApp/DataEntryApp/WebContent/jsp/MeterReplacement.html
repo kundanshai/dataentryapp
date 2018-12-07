@@ -1,0 +1,170 @@
+<style>
+	/* Added By 340132 on 23-07-2012 Start*/
+	#mrbox {
+		z-index: 500;
+		filter: alpha(opacity=90); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=90); /* IE */
+		-moz-opacity: 1.0; /*older Mozilla*/
+		-khtml-opacity: 1.0;   /*older Safari*/
+		opacity: 1.0;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#FFF;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden; color:#FFFFFF; text-align:center; vertical-align:middle;
+	}	
+</style>
+
+<div id="mrbox" style="display: none;">
+<table width='100%' height='100%' align='center' >
+	<tr>
+		<td align='center' width='100%' height='100%'>
+			<table class="djbpage">
+				<tr>
+					<td align='center' width='100%' height='100%'>						
+						<table width="100%" align="center" border="0" cellpadding="0" cellspacing="5px">
+							<tr>
+								<td align="left"  valign="top" width="100%">
+									<form name="MR" method="post" action="javascript:void(0);">
+									<fieldset>
+										<legend>Meter Replacement Details</legend>
+										<table width="98%" align="center" border="0" cellpadding="0" cellspacing="0">											
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label>Meter Installation Date </label><font size="0.5">(DD/MM/YYYY)</font><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+														<input type="text" name="meterInstalDD" id="meterInstalDD" size="1" maxlength="2" class="textbox"  style="text-align:center;" onkeyup="fnSetmeterInstalMMFocus(this);" onblur="fnMakeTwoDigit(this);"/>&nbsp;/
+														<input type="text" name="meterInstalMM" id="meterInstalMM" size="1" maxlength="2" class="textbox"  style="text-align:center;" onkeyup="fnSetmeterInstalYYYYFocus(this);" onblur="fnMakeTwoDigit(this);"/>&nbsp;/
+														<input type="text" name="meterInstalYYYY" id="meterInstalYYYY" size="2" maxlength="4" class="textbox"  style="text-align:center;" onkeyup="fnSetmeterInstalMeterNoFocus(this);" onblur="IsNumber(this);"/>
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label>Meter No</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<input type="text" name="meterNo" id="meterNo" maxlength="30" style="text-align:left;" class="textbox"/>
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label>Start Meter Read</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<input type="text" name="startMeterRead" id="startMeterRead" maxlength="9" style="text-align:right;" class="textbox" onblur="IsPositiveNumber(this);"/>
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label>Meter Type</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<select name="meterType" id="meterType" class="selectbox">
+												  		<option value="">Please Select</option>
+												  		<option value="<%=MeterTypeLookup.DJB_METER.getMeterTypeCode() %>"><%=MeterTypeLookup.DJB_METER.getMeterTypeDesc() %></option>
+												  		<option value="<%=MeterTypeLookup.PVT_METER.getMeterTypeCode() %>"><%=MeterTypeLookup.PVT_METER.getMeterTypeDesc() %></option>
+												  	</select> 	
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>																
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label> Is L&T service provider</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<select name="isLNTServiceProvider" id="isLNTServiceProvider" class="selectbox">
+												  		<option value="">Please Select</option>
+												  		<option value="N">NO</option>
+												  		<option value="Y">YES</option>
+												  	</select>													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label>Model</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<input type="text" name="modelNo" id="modelNo" maxlength="10" style="text-align:left;" class="textbox"/>
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label> Digit Left</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<input type="text" name="digitLeft" id="digitLeft" maxlength="2" style="text-align:right;" class="textbox" onblur="IsPositiveNumber(this);"/>
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label> Digit Right</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<input type="text" name="digitRight" id="digitRight" maxlength="2" style="text-align:right;" class="textbox" onblur="IsPositiveNumber(this);"/>
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													<label>Full Scale</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="20%" nowrap>
+													<input type="text" name="fullScale" id="fullScale" maxlength="10" style="text-align:right;" class="textbox" onblur="IsPositiveNumber(this);"/>
+													
+												</td>
+												<td align="left" width="40%" nowrap>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="40%" colspan="2">
+													&nbsp;
+												</td>
+												<td align="left" width="60%" nowrap>				
+													<input type="button"  value=" Save " class="groovybutton" onclick="javascript:fnSaveMeterReplacementDetails();"/>									
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="button"  value=" Reset " class="groovybutton" onclick="javascript:fnResetMeterReplacementDetails();"/>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="button"  value=" Cancel " class="groovybutton" onclick="javascript:fnCancelMeterReplacementDetails();"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red"><sup>*</sup></font> = Mandatory
+												</td>								
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+										</table>
+									</fieldset>
+									</form>	
+								</td>
+							</tr>
+						</table>							
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</div>

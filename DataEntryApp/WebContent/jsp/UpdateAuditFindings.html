@@ -1,0 +1,405 @@
+<!--
+*@author  Atanu Mandal 10-03-2016
+-->
+<style>
+/* Added By Atanu Mandal on 04-03-2016 Start*/
+#audit-finding-box {
+	z-index: 500;
+		filter: alpha(opacity=50); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+		-moz-opacity: .50; /*older Mozilla*/
+		-khtml-opacity: 0.5;   /*older Safari*/
+		opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#000000;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+
+#audit-finding-box-field {
+		z-index: 600;		
+		background-color:#fff;
+		border:5px solid #33CCCC;
+		width:70%; 
+		height:70%;
+		align:center;
+		valign:middle;
+		color:#000;
+		position:absolute; 
+		top:15%;
+		left:15%;
+		text-align:center;
+		/* Firefox */
+	    display:-moz-box;
+	    -moz-box-pack:center;
+	    -moz-box-align:center;
+	
+	    /* Safari and Chrome */
+	    display:-webkit-box;
+	    -webkit-box-pack:center;
+	    -webkit-box-align:center;
+	
+	    /* W3C */
+	    display:box;
+	    box-pack:center;
+	    box-align:center;		
+}
+
+</style>
+<script>
+function popupAddAuditFindingScreen(kno,billRound,rowNum) {
+	window.scrollTo(0,0);
+	document.getElementById('auditFindingMsg').innerHTML = "";
+	document.getElementById('abnormalConsumptionReason').value = "";
+	document.getElementById('nonSatisfactoryReason').value = "";
+	document.getElementById('satisfactoryReason').value = "";
+	document.getElementById('suggestedAction').value = "";
+	document.getElementById('iAgree').checked = false;
+	document.getElementById('btnSaveAuditFindings').disabled = true;
+	document.getElementById("nonSatisfactoryOtherReasonTR").style.display = "none";
+	document.getElementById("satisfactoryOtherReasonTR").style.display = "none";
+	document.getElementById("satisfactoryReason").disabled = true;
+	document.getElementById("nonSatisfactoryReason").disabled = true;
+	var userID = '<%= session.getAttribute("auditUserID") %>';
+	document.getElementById('auditUserID').value = userID;
+	var userName = '<%= session.getAttribute("userName") %>';
+	document.getElementById('auditorName').value = userName;
+	if (null != document.getElementById('audit-finding-box')
+			&& 'null' != document.getElementById('audit-finding-box')) {
+		if (null != document.getElementById('djbmaintable')
+				&& 'null' != document.getElementById('djbmaintable')) {
+			var theTable = document.getElementById('djbmaintable');
+			theTable.className = "djbmainhidden";
+		}
+		document.body.style.overflow = 'hidden';
+		var thediv = document.getElementById('audit-finding-box');
+		thediv.style.display = "block";
+		thediv = document.getElementById('audit-finding-box-field');
+		thediv.style.display = "block";
+		//alert('update Audit Findings '+kno+' : '+billRound+' : '+rowNum)
+		document.getElementById('auditFindingBillRound').value = billRound;
+		document.getElementById('auditFindingKno').value = kno;
+		document.getElementById('auditFindingRowNumber').value = rowNum;
+	}
+}
+function hideAddAuditFindingScreen() {
+	if (null != document.getElementById('audit-finding-box')
+			&& 'null' != document.getElementById('audit-finding-box')) {
+		var thediv = document.getElementById('audit-finding-box');
+		thediv.style.display = "none";
+		thediv = document.getElementById('audit-finding-box-field');
+		thediv.style.display = "none";
+		if (null != document.getElementById('djbmaintable')
+				&& 'null' != document.getElementById('djbmaintable')) {				
+			var theTable = document.getElementById('djbmaintable');
+			theTable.className = "djbmain";
+		}
+		document.body.style.overflow = 'auto';
+	}
+
+}
+
+$(document).click(function() {    
+    $('#iAgree').click(function() {
+        if($(this).is(":checked"))
+        {
+        	document.getElementById('btnSaveAuditFindings').disabled = false;
+        } else {
+        	document.getElementById('btnSaveAuditFindings').disabled = true;
+        }
+    });
+});
+function fnDisableCorrespondingReason(){
+	var abnormalReason = document.getElementById("abnormalConsumptionReason").value;
+	if('NON-SATISFACTORY' == (Trim(abnormalReason))){
+		document.getElementById("nonSatisfactoryReason").disabled = false;
+		document.getElementById("satisfactoryReason").disabled = true;
+	}
+	if('SATISFACTORY' == (Trim(abnormalReason))){
+		document.getElementById("nonSatisfactoryReason").disabled = true;
+		document.getElementById("satisfactoryReason").disabled = false;
+	}
+	if('' == (Trim(abnormalReason))){
+		document.getElementById("satisfactoryReason").disabled = true;
+		document.getElementById("nonSatisfactoryReason").disabled = true;
+		document.getElementById("satisfactoryReason").value = "";
+		document.getElementById("nonSatisfactoryReason").value = "";
+		document.getElementById("nonSatisfactoryOtherReasonTR").style.display = "none";
+		document.getElementById("satisfactoryOtherReasonTR").style.display = "none";
+	}
+	return true;
+}
+function fnSaveAuditFindings() {
+	document.getElementById('auditFindingMsg').innerHTML ='';
+	document.getElementById('hidAction').value="saveAuditFindings";
+	var url = "consumptionVariationAuditAJax.action?hidAction=saveAuditFindings";
+	var kno = document.getElementById('auditFindingKno').value;
+	var	billRound = document.getElementById('auditFindingBillRound').value;
+	var	rowNumber = document.getElementById('auditFindingRowNumber').value;
+	//alert('KNO IS :: '+kno+' BILLROUND is :: '+billRound);
+	var abnormalConsumptionReason = '';
+	var nonSatisfactoryReason = '';
+	var satisfactoryReason = '';
+	var suggestedAction = '';
+	var submitForm = 'Y';
+	var nonSatisfactoryOtherReason = '';
+	var satisfactoryOtherReason = '';
+	var auditorName = '';
+	
+	abnormalConsumptionReason = document.getElementById("abnormalConsumptionReason").value;
+	//alert('abnormalConsumptionReason :'+abnormalConsumptionReason);
+
+	nonSatisfactoryReason = document.getElementById("nonSatisfactoryReason").value;
+	//alert('nonSatisfactoryReason :'+nonSatisfactoryReason);
+
+	satisfactoryReason = document.getElementById("satisfactoryReason").value;
+	//alert('satisfactoryReason :'+satisfactoryReason);
+	auditorName = document.getElementById("auditorName").value;
+	suggestedAction = document.getElementById("suggestedAction").value;
+	
+	if(abnormalConsumptionReason && ''!=(Trim(abnormalConsumptionReason))){
+		//alert('abnormalConsumptionReason is not null{'+abnormalConsumptionReason+'}');
+		if('NON-SATISFACTORY' == (Trim(abnormalConsumptionReason)) && ''==(Trim(nonSatisfactoryReason))){
+			document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Select Reason for Non-satisfactory reading for Non-satisfactory Consumption Variation.</b></font>";
+			submitForm = 'N';
+		}
+		if('SATISFACTORY' == (Trim(abnormalConsumptionReason)) &&  ''==(Trim(satisfactoryReason))){
+			document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Select Reason for Satisfactory reading for Satisfactory Consumption Variation.</b></font>";
+			submitForm = 'N';
+		}
+		if('OTHERS' == (Trim(nonSatisfactoryReason))){
+			nonSatisfactoryOtherReason = document.getElementById("nonSatisfactoryOtherReason").value;
+			if('' == (Trim(nonSatisfactoryOtherReason))){
+				document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Provide Reason for Other Non-satisfactory Reason.</b></font>";
+				submitForm = 'N';
+			}
+			else{
+				nonSatisfactoryReason = nonSatisfactoryOtherReason;
+			}
+		}
+		if('OTHERS' == (Trim(satisfactoryReason))){
+			satisfactoryOtherReason = document.getElementById("satisfactoryOtherReason").value;
+			if('' == (Trim(satisfactoryOtherReason))){
+				document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Provide Reason for Other Satisfactory Reason.</b></font>";
+				submitForm = 'N';
+			}
+			else{
+				satisfactoryReason = satisfactoryOtherReason;
+			}
+		}
+		if('' == (Trim(auditorName))){
+			document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Enter Auditor Name.</b></font>";
+			submitForm = 'N';
+		}
+	}else{
+		document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Select Reason for Abnormal Consumption Variation.</b></font>";
+		submitForm = 'N';
+	}
+	if(''==(Trim(suggestedAction))){
+		document.getElementById('auditFindingMsg').innerHTML ="<font color='red' size='2'><b>Please Select Suggested Audit Action.</b></font>";
+		submitForm = 'N';
+	}
+	var userId = document.getElementById('auditUserID').value;
+	
+	if('Y' == submitForm){
+		var dataStr="{\"JsonList\":[";
+		dataStr += "{\"kno\":\""+kno+"\",";
+		dataStr += "\"billRound\":\""+billRound+"\",";
+		dataStr += "\"consumptnVariatnReasn\":\""+abnormalConsumptionReason+"\",";
+		dataStr += "\"nonSatsfctryReadngReasn\":\""+nonSatisfactoryReason+"\",";
+		dataStr += "\"satsfctryReadngReasn\":\""+satisfactoryReason+"\",";
+		dataStr += "\"auditorName\":\""+auditorName+"\",";
+		dataStr += "\"sugstdAuditAction\":\""+suggestedAction+"\",";
+		dataStr += "\"userId\":\""+userId+"\"}";
+		dataStr+="]}";
+		url += "&data=";
+		url += dataStr;
+		//alert('Update Audit Findings Url :: '+url);
+		msg="Are You Sure You Want to Save the Audit Findings?\nClick OK to continue else Cancel.";
+			if(confirm(msg)){
+				var httpBowserObject = null;
+				if (window.ActiveXObject) {
+					httpBowserObject = new ActiveXObject("Microsoft.XMLHTTP");
+				} else if (window.XMLHttpRequest) {
+					httpBowserObject = new XMLHttpRequest();
+				} else {
+					alert("Browser does not support AJAX...........");
+					return;
+				}
+				if (httpBowserObject != null) {
+					hideScreen();
+					httpBowserObject.open("POST", url, true);
+					httpBowserObject.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+					httpBowserObject.setRequestHeader("Connection", "close");
+					httpBowserObject.onreadystatechange = function() {
+						if (httpBowserObject.readyState == 4) {
+							var responseString = httpBowserObject.responseText;
+							if (null == responseString|| responseString.indexOf("ERROR:") > -1) {
+								    showScreen();
+									document.getElementById('auditFindingMsg').innerHTML = responseString;
+							}else {
+								showScreen();
+								hideAddAuditFindingScreen();
+								document.getElementById('trAddFindings'+rowNumber).innerHTML = "";
+								document.getElementById('trNo'+rowNumber).style.backgroundColor="#34A90A";
+								var today = new Date();
+								 var dd = today.getDate();
+								 var mm = today.getMonth()+1; //January is 0!
+								 var yyyy = today.getFullYear();
+								 if(dd<10){
+								    dd='0'+dd;
+								  } 
+								  if(mm<10){
+								        mm='0'+mm;
+								  } 
+								  var today = dd+'-'+mm+'-'+yyyy;
+								  document.getElementById('trAuditDate'+rowNumber).innerHTML = today;
+								  document.getElementById('onscreenMessage').innerHTML = responseString+" <font color='#33CC33'><b>For KNO "+kno+".</b></font>";
+								  
+							}
+						}
+					};
+					httpBowserObject.send(null);
+				}
+				
+			}
+	}
+}
+
+function fnEnableNonSatisfactoryOtherReason(){
+	var nonSatisfactoryReason = document.getElementById("nonSatisfactoryReason").value;
+	if(nonSatisfactoryReason && 'OTHERS' == (Trim(nonSatisfactoryReason))){
+		document.getElementById("nonSatisfactoryOtherReasonTR").style.display = "";
+	}else{
+		document.getElementById("nonSatisfactoryOtherReasonTR").style.display = "none";
+	}
+}
+function fnEnableSatisfactoryOtherReason(){
+	var satisfactoryReason = document.getElementById("satisfactoryReason").value;
+	if(satisfactoryReason && 'OTHERS' == (Trim(satisfactoryReason))){
+		document.getElementById("satisfactoryOtherReasonTR").style.display = "";
+	}else{
+		document.getElementById("satisfactoryOtherReasonTR").style.display = "none";
+	}
+}
+function fnValidateChar(e){
+    try {
+        var unicode=e.charCode? e.charCode : e.keyCode;
+        if ((unicode>=65 && unicode<=90) || (unicode>=97 && unicode<=122)|| unicode==8 ||  unicode==32){ 
+        	return true ;
+         }else{
+        	 return false;
+         }
+        
+        }catch (e) {
+    }
+}
+
+</script>
+<div id="audit-finding-box" style="display: none;"
+  title="Press Esc to Go To Main Screen"></div>
+<div id="audit-finding-box-field" style="display: none;">
+  <p align="right"><a href="#"
+    onclick="javascript:hideAddAuditFindingScreen();"> <img
+    src="/DataEntryApp/images/invalid.gif" border="0"
+    title="Click to Return To Main Screen" /> </a></p>
+  <table align="center" border="0" width="100%" >
+    <tr>
+      <td align='center' colspan="5" nowrap><font size="2" color="#33CCCC"><strong>ADD AUDIT FINDINGS</strong></font></td>
+    </tr>
+    <tr>
+      <td align='left' colspan="5" id="auditFindingMsg" nowrap>&nbsp;</td>
+    </tr>
+    <tr>
+      <td align='left'>&nbsp;</td>
+      <td align='left'><font size="2" color="black"><strong>Reason for Abnormal Consumption Variation found</strong></font><sup><font color="red">*</font></sup></td>
+      <td align="left" colspan="2" id="abnormalConsumptionReasonTD">
+        <s:select headerKey="" headerValue="Please Select" name="abnormalConsumptionReason" id="abnormalConsumptionReason" list="#session.abnormalConsumptionReasonList"
+          cssClass="selectbox-long" theme="simple" onchange="return fnDisableCorrespondingReason();"/>
+      </td>
+    </tr>
+    <tr>
+      <td align='left'>&nbsp;</td>
+      <td align='left'><font size="2" color="black"><strong>Reason for Non-satisfactory reading</strong></font><sup><font color="red">**</font></sup></td>
+      <td align="left" colspan="2" id="nonSatisfactoryReasonTD">
+        <s:select headerKey="" headerValue="Please Select" name="nonSatisfactoryReason"
+          id="nonSatisfactoryReason" list="#session.nonSatisfactoryReasonList"
+          cssClass="selectbox-long" theme="simple" onchange="return fnEnableNonSatisfactoryOtherReason();" disabled="true" />
+      </td>
+    </tr>
+    <tr style="display:none;" id="nonSatisfactoryOtherReasonTR">
+      <td align='left'>&nbsp;</td>
+      <td align='left'>&nbsp;</td>
+      <td align="left" colspan="2"><input type="text" id="nonSatisfactoryOtherReason" name="nonSatisfactoryOtherReason" class="textbox-long" maxlength="400" onpaste="return false;" onkeypress="return fnValidateChar(event);"/></td>
+    </tr>
+    <tr>
+      <td align='left'>&nbsp;</td>
+      <td align='left'><font size="2" color="black"><strong>Reason for Satisfactory reading</strong></font><sup><font color="red">**</font></sup></td>
+      <td align="left" colspan="2" id="satisfactoryReasonTD">
+        <s:select headerKey="" headerValue="Please Select" name="satisfactoryReason"
+          id="satisfactoryReason" list="#session.satisfactoryReasonList"
+          cssClass="selectbox-long" theme="simple" onchange="return fnEnableSatisfactoryOtherReason();" disabled="true" />
+      </td>
+    </tr>
+    <tr style="display:none;" id="satisfactoryOtherReasonTR">
+      <td align='left'>&nbsp;</td>
+      <td align='left'>&nbsp;</td>
+      <td align="left" colspan="2"><input type="text" id="satisfactoryOtherReason" name="satisfactoryOtherReason" class="textbox-long" onpaste="return false;" onkeypress="return fnValidateChar(event);" maxlength="400"/></td>
+    </tr>
+    <tr>
+      <td align='left'>&nbsp;</td>
+      <td align='left'><font size="2" color="black"><strong>Suggested Audit Action</strong></font><sup><font color="red">*</font></sup></td>
+      <td align="left" colspan="2" id="suggestedActionTD">
+        <s:select headerKey="" headerValue="Please Select" name="suggestedAction"
+          id="suggestedAction" list="#session.suggestedActionList"
+          cssClass="selectbox-long" theme="simple"/>
+      </td>
+    </tr>
+    <tr>
+      <td align='left'>&nbsp;</td>
+      <td align='left'><font size="2" color="black"><strong>Name of the Auditor</strong></font><sup><font color="red">*</font></sup></td>
+      <td align='left'><input type="text"  name="auditorName" id="auditorName" class="textbox-long" style="text-align:left;" onpaste="return false;" onkeypress="return fnValidateChar(event);" maxlength="50"/></td>
+    </tr>
+    <tr>
+      <td align='left'>&nbsp;</td>
+      <td align='left'><font size="2" color="black"><strong>User ID</strong></font><sup><font color="red">*</font></sup></td>
+      <td align='left'><input type="text"  name="auditUserID" id="auditUserID" class="textbox-long" style="text-align:left;" disabled="disabled"/></td>
+    </tr>
+    <tr>
+      <td><input type="hidden"  name="auditFindingKno" id="auditFindingKno" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+      <td><input type="hidden"  name="auditFindingBillRound" id="auditFindingBillRound" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+      <td><input type="hidden"  name="auditFindingRowNumber" id="auditFindingRowNumber" class="textbox" style="text-align:left;" disabled="disabled"/></td>
+    </tr>
+  </table>
+  <table align="center" border="0" width="100%">
+    <tr>
+      <td align='left' colspan="3"><font size="2" color="black"><strong>Disclaimer </strong></font></td>
+    </tr>
+    <tr>
+      <td align='left' colspan="3">
+        <ul>
+          <li>I have understood the necessity of audit which I will perform without any discrimination and in a transparent manner in the interest of Board.</li>
+          <li>I have been authorized to verify and audit the self-billing cases through mSeva app of Delhi Jal Board.</li>
+          <li>I will thoroughly check the report to the best of my knowledge and reasonable prutends check will be made.</li>
+          <li>Audit action as per the report will be assigned to the concerned person and updated in a true and fair manner.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td align="left"><input type="checkbox" name="iAgree" value="true" id="iAgree"/><strong>I Agree</strong></td>
+      <td align='left'><input type="button" name="btnBackMainScreen"
+        id="btnBackMainScreen" value=" Back " class="groovybutton"
+        onclick="hideAddAuditFindingScreen();" /></td>
+      <td align='left'><input type="button" name="btnSaveAuditFindings"
+        id="btnSaveAuditFindings" value=" Complete " class="groovybutton"
+        onclick="fnSaveAuditFindings();" disabled="disabled"/></td>
+    </tr>
+    <tr>
+      <td align='left' colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td align='right' colspan ="3" nowrap><sup><font color="red">*</font></sup>&nbsp;Marked
+        Fields are Mandatory<br><sup><font color="red">**</font></sup>&nbsp;Marked
+        Fields are Conditional Mandatory
+      </td>
+    </tr>
+  </table>
+</div>

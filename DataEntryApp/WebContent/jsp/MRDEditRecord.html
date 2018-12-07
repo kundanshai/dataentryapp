@@ -1,0 +1,353 @@
+<style>
+	/* Added By 340132 on 23-07-2012 Start*/
+	#mrbox {
+		z-index: 500;
+		filter: alpha(opacity=90); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=90); /* IE */
+		-moz-opacity: 1.0; /*older Mozilla*/
+		-khtml-opacity: 1.0;   /*older Safari*/
+		opacity: 1.0;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#FFF;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden; color:#FFFFFF; text-align:center; vertical-align:middle;
+	}	
+</style>
+
+<div id="mrdebox" style="display: none;">
+<table width='100%' height='100%' align='center' title="Press Esc To Exit">
+	<tr>
+		<td align='center' width='100%' height='100%'>
+			<table class="djbpage" border="0">
+				<tr height="20px">
+					<td align="center" valign="top">
+						&nbsp;
+					</td>
+				</tr>				
+				<tr>
+					<td  valign="top">						
+						<div class="search-option" title="Current Search Criteria.">
+						<font size="2"><b>Displaying Records for Zone:</b>&nbsp;&nbsp;<%=session.getAttribute("searchZone") %>&nbsp;&nbsp;<b>MR No.:</b>&nbsp;&nbsp;<%=session.getAttribute("searchMRNo") %>&nbsp;&nbsp;<b>Area:</b>&nbsp;&nbsp;<%=session.getAttribute("searchArea") %></font>
+						</div>					
+						<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="center"  valign="top" >									   
+									<div class="paged-main-div" >							             
+						                <div id="p" class="paged-div _current" style="">
+							                <table width="100%" align="center" border="0" cellpadding="0" cellspacing="5px">
+												<tr>
+													<td align="left"  valign="top" width="50%">									
+														<fieldset>
+															<legend>Consumer Details </legend>
+															<table width="98%" align="center" border="0" cellpadding="0" cellspacing="0">
+																<tr>
+																	<td align="left" width="40%" colspan="2">
+																		<label>Name</label>
+																	</td>
+																	<td align="left" width="60%" colspan="2" nowrap>
+																		<span id="consumerName"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="40%" colspan="2">
+																		<label>KNO</label>
+																	</td>
+																	<td align="left" width="60%" colspan="2">
+																		<span id="Kno"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="40%" colspan="2">
+																		<label>WC No</label>
+																	</td>
+																	<td align="left" width="60%" colspan="2">
+																		<span id="consumerWcNo"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="40%" colspan="2">
+																		<label>Category</label>
+																	</td>
+																	<td align="left" width="60%" colspan="2">
+																		<span id="consumerCat"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="40%" colspan="2">
+																		<label>Consumer Type</label>
+																	</td>
+																	<td align="left" width="60%" colspan="2">
+																		<span id="consumerServiceType"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="40%" colspan="2" nowrap>
+																		<label>Last Bill Generation Date</label>
+																	</td>
+																	<td align="left" width="60%" colspan="2">
+																		<span id="consumerLastBillGenerationDate"></span>
+																	</td>
+																</tr>
+															</table>
+														</fieldset>
+													</td>
+													<td align="left"  valign="top" width="50%">
+														<fieldset>
+															<legend>Previous Meter Read Details</legend>
+															<table width="98%" align="center" border="0" cellpadding="0" cellspacing="0">
+																<tr>
+																	<td align="left" width="60%" colspan="2">
+																		<label>Last Meter Read Date</label>
+																	</td>
+																	<td align="left" width="40%" colspan="2">
+																		<span id="prevMeterReadDate"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="60%" colspan="2">
+																		<label>Last Meter Read Status</label>
+																	</td>
+																	<td align="left" width="40%" colspan="2">
+																		<span id="prevMeterStatus"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="60%" colspan="2">
+																		<label>Last Registered Reading</label>
+																	</td>
+																	<td align="left" width="40%" colspan="2">
+																		<span id="prevRegRead"></span>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left" width="60%" colspan="2">
+																		<label>Actual Last Meter Read Date</label>
+																	</td>
+																	<td align="left" width="40%" colspan="2">
+																		<span id="prevActMeterReadDate"></span>
+																	</td>
+																</tr>																
+																<tr>
+																	<td align="left" width="60%" colspan="2">
+																		<label>Actual Last Registered Reading</label>
+																	</td>
+																	<td align="left" width="40%" colspan="2">
+																		<span id="prevActRegRead"></span>
+																	</td>
+																</tr>	
+																<tr>
+																	<td align="left" width="60%" colspan="2">
+																		<label>No Of Floors</label>
+																	</td>
+																	<td align="left" width="40%" colspan="2">
+																		<span id="prevNoOfFloor"></span>
+																	</td>
+																</tr>															
+															</table>
+														</fieldset>
+													</td>
+												</tr>
+												<tr>
+													<td align="left"  valign="top" colspan="2">
+														<fieldset>													
+															<legend>Current Meter Read Details</legend>
+															<form action="javascript:void(0);" name="form" onsubmit="fnSaveDetails();">
+																															
+																<input type="hidden" name="kno1" id="kno1" />
+																<input type="hidden" name="billRound1" id="billRound1" />
+																<input type="hidden" name="seqNo1" id="seqNo1" /> <!-- Modified By Madhuri As per Jtrac DJB-4604 -->>
+																<input type="hidden" name="hidConCat1" id="hidConCat1" />
+																<input type="hidden" name="hidConStatus1" id="hidConStatus1" />
+																<input type="hidden" name="hidPrevMeterReadDate1" id="hidPrevMeterReadDate1" />
+																<input type="hidden" name="hidPrevActMeterReadDate1" id="hidPrevActMeterReadDate1" />
+																<input type="hidden" name="hidMeterReadDate1" id="hidMeterReadDate1" />
+																<input type="hidden" name="hidMeterStatus1" id="hidMeterStatus1" />
+																<input type="hidden" name="hidPrevMeterStatus1" id="hidPrevMeterStatus1"/>
+																<input type="hidden" name="hidPrevMeterRead1" id="hidPrevMeterRead1" />
+																<input type="hidden" name="hidPrevActMeterRead1" id="hidPrevActMeterRead1" />
+																<input type="hidden" name="hidCurrentMeterRead1" id="hidCurrentMeterRead1" />
+																<input type="hidden" name="hidNewAverageConsumption1" id="hidNewAverageConsumption1"/>
+																<input type="hidden" name="hidNewNoOfFloor1" id="hidNewNoOfFloor1"/>
+																<input type="hidden" name="hidConsumerType1" id="hidConsumerType1" />
+																<table width="98%" align="center" border="0" cellpadding="0" cellspacing="0">
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>Service Cycle Route Sequence No</label>
+																		</td>
+																		<td align="left" width="60%" colspan="2">																
+																			<span id="svcCycRtSeq"></span>														
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>Consumer Status</label>
+																		</td>
+																		<td align="left" width="60%" colspan="2">																
+																			<select name="consumerStatus1" id="consumerStatus1" class="selectbox-long" onchange="setAll();" >
+																		  		<option value="60">Regular</option>
+																		  		<option value="<%=ConsumerStatusLookup.CAT_CHANGE.getStatusCode() %>"><%=ConsumerStatusLookup.CAT_CHANGE.getStatusDescr() %></option>
+																		  		<option value="<%=ConsumerStatusLookup.DISCONNECTED.getStatusCode() %>"><%=ConsumerStatusLookup.DISCONNECTED.getStatusDescr() %></option>
+																		  		<option value="<%=ConsumerStatusLookup.METER_INSTALLED.getStatusCode() %>"><%=ConsumerStatusLookup.METER_INSTALLED.getStatusDescr() %></option>
+																		  		<option value="<%=ConsumerStatusLookup.METER_NOT_INSTALLED.getStatusCode() %>"><%=ConsumerStatusLookup.METER_NOT_INSTALLED.getStatusDescr() %></option>
+																		  		<option value="<%=ConsumerStatusLookup.ERROR_IN_PHYSICAL_MRD.getStatusCode() %>">Miscellaneous</option>
+																		  		<option value="<%=ConsumerStatusLookup.REOPENING.getStatusCode() %>"><%=ConsumerStatusLookup.REOPENING.getStatusDescr() %></option>
+																		  		<option value="<%=ConsumerStatusLookup.INVALID_DATA.getStatusCode() %>"><%=ConsumerStatusLookup.INVALID_DATA.getStatusDescr() %></option>
+																		  	</select><span id="popupMTR"></span>																
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>Meter Read Date/Bill Generation Date</label><font size="0.5">(DD/MM/YYYY)</font><font color="red"><sup>*</sup></font>
+																		</td>
+																		<td align="left" width="20%" nowrap>														
+																			<span id="meterReadDateSpan1">
+																				<input type="text" name="meterReadDD1" id="meterReadDD1" size="1" maxlength="2" class="textbox"  style="text-align:center;" onchange="setMeterReadDate();" onkeyup="fnSetFocusMM(this);"/>&nbsp;/
+																				<input type="text" name="meterReadMM1" id="meterReadMM1" size="1" maxlength="2" class="textbox"  style="text-align:center;" onchange="setMeterReadDate();" onkeyup="fnSetFocusDDConfirm(this);" />&nbsp;/
+																			</span>
+																			<input type="text" name="meterReadYYYY1" id="meterReadYYYY1" size="2" maxlength="4" class="textbox"  style="text-align:center;" onchange="setMeterReadDate();" />
+																		</td>
+																		<td align="left" width="40%" nowrap>
+																		<label>Re-enter</label><font color="red"><sup>*</sup></font>&nbsp;
+																			<input type="text" name="meterReadDDConfirm1" id="meterReadDDConfirm1" size="1" maxlength="2" class="textbox"  style="text-align:center;" onfocus="disableMeterReadDate();" onblur="checkMeterReadDate();"  onkeyup="fnSetFocusMMConfirm(this);"/>&nbsp;/
+																			<input type="text" name="meterReadMMConfirm1" id="meterReadMMConfirm1" size="1" maxlength="2" class="textbox"  style="text-align:center;" onfocus="disableMeterReadDate();" onblur="checkMeterReadDate();" onkeyup="fnSetFocusMeterReadStatus(this);"/>&nbsp;/
+																			<input type="text" name="meterReadYYYYConfirm1" id="meterReadYYYYConfirm1" size="2" maxlength="4" class="textbox"  style="text-align:center;" />
+																			<span id="confirmDate1"></span>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>Meter Read Status</label>
+																		</td>
+																		<td align="left" width="20%" >																
+																			<select name="meterReadStatus1" id="meterReadStatus1" class="selectbox" onchange="setMeterReadStatus(this);" >
+																		  		<option value="">Please Select</option>	
+																		  			<%ArrayList meterReadStatusList=(ArrayList)session.getAttribute("meterReadStatusList");
+																		  			for(int m=0; m < meterReadStatusList.size();m++){ %>
+																			  		<option value="<%=meterReadStatusList.get(m)%>"><%=meterReadStatusList.get(m)%></option>
+																			  		<%} %>																		  		
+																			</select>																
+																		</td>
+																		<td align="left" width="40%" nowrap>																																					
+																			Read Type&nbsp;<span id="meterReadTypeSpan1"></span>&nbsp;&nbsp;Billing&nbsp;<span id="billTypeSpan1"></span>
+																		</td>
+																		
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>Current Meter Read</label>
+																		</td>
+																		<td align="left" width="20%" nowrap>																	
+																			<span id="currentMeterReadSpan1">
+																			<input type="text" name="currentMeterRead1" id="currentMeterRead1"  style="text-align:right;" class="textbox" onfocus="fnCheckMeterReadStatus();" onblur="IsPositiveNumber(this);" onchange="setCurrentMeterRead(this);" />
+																			</span>&nbsp;KL
+																		</td>
+																		<td align="left" width="40%" nowrap>
+																			<label>Re-enter</label><font color="red"><sup>&nbsp;</sup></font>&nbsp;
+																			<input type="text" name="currentMeterReadConfirm1" id="currentMeterReadConfirm1" style="text-align:right;" class="textbox" onfocus="disableCurrentMeterRead();" onchange="checkCurrentMeterRead();"/>&nbsp;KL
+																			<span id="confirmCurrentMeterRead1"></span>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>Current Average Consumption</label>
+																		</td>
+																		<td align="left" width="60%" colspan="2">																	
+																			<span><input type="text" name="currentAverageConsumption1" id="currentAverageConsumption1"  style="text-align:right;" class="textbox" disabled="true" readonly="true" />&nbsp;KL</span>
+																		</td>																		
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>New Average Consumption</label>
+																		</td>
+																		<td align="left" width="20%" nowrap>
+																			<span id="newAverageConsumptionSpan1">
+																			<input type="text" name="newAverageConsumption1" id="newAverageConsumption1"  style="text-align:right;" class="textbox" onblur="IsPositiveNumber(this);"  onchange="setNewAvgConsumption(this);" />
+																			</span>&nbsp;KL
+																		</td>
+																		<td align="left" width="40%" nowrap>
+																			<label>Re-enter</label><font color="red"><sup>&nbsp;</sup></font>&nbsp;
+																			<input type="text" name="newAverageConsumptionConfirm1" id="newAverageConsumptionConfirm1" style="text-align:right;" class="textbox" onfocus="disableNewAverageConsumption();" onchange="checkNewAverageConsumption();"/>&nbsp;KL
+																			<span id="confirmNewAverageConsumption1"></span>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																			<label>No Of Floors</label>
+																		</td>
+																		<td align="left" width="20%" nowrap>
+																			<span id="newNoOfFloorSpan1">
+																			<input type="text" name="newNoOfFloor1" id="newNoOfFloor1"  style="text-align:right;" class="textbox" onblur="IsPositiveNumber(this);"  onblur='IsNumber(this);' onchange="setNewNoOfFloor(this);"/>
+																			</span>&nbsp;
+																		</td>
+																		<td align="left" width="40%" nowrap>
+																			<label>Re-enter</label><font color="red"><sup>&nbsp;</sup></font>&nbsp;
+																			<input type="text" name="newNoOfFloorConfirm1" id="newNoOfFloorConfirm1" style="text-align:right;" class="textbox" onfocus="disableNewNoOfFloor();" onchange="checkNewNoOfFloor();"/>&nbsp;&nbsp;&nbsp;
+																			<span id="confirmNewNoOfFloorConfirm1"></span>
+																		</td>
+																	</tr>	
+																	<tr>
+																		<td align="left" width="40%" colspan="2">
+																		<div id="remarksDiv11" style="display:none;align:center;">
+																			<label>Remarks</label><font color="red"><sup>*</sup></font>		
+																		</div>
+																		</td>
+																		<td align="left" width="40%" colspan="2">
+																			<div id="remarksDiv21" style="display:none;align:center;">																																						
+																				<textarea rows="2" cols="48" name="remarks1" id="remarks1"  style="text-align:left;" onchange="setRemarks(this);"></textarea>
+																			</div>
+																		</td>
+																	</tr>	
+																	<tr><td align="left" colspan="4">&nbsp;</td></tr>
+																	<tr>
+																		<td align="left" width="30%">
+																			<input type="button"  value=" Back " class="groovybutton" onclick="javascript:fnCancel();"/>																			
+																		</td>
+																		<td align="right" width="10%">
+																			<input type="button" name="btnReset" id="btnPrev" value="Reset" class="groovybutton" onclick="resetAll();"/>
+																		</td>
+																		<td align="right" width="60%" colspan="2">
+																			<input type="submit"  value=" Save " class="groovybutton" />
+																		</td>
+																	</tr>
+																</table>
+															</form>
+														</fieldset>	
+													</td>
+												</tr>
+											</table>
+										</div>
+									</div>	
+								</td>
+							</tr>
+							<tr>
+								<td align="center"  valign="top">
+								<div class="page-nos" id="curr-page-no">
+								<table width="100%" border="0">
+									<tr>
+										<td width="2%" align="left" valign="top" nowrap>								
+											&nbsp;		
+										</td>
+										<td width="96%" align="center">										
+												<CITE id="pageSpan" class="currentPageNo" title="Current Record No.">1</CITE>
+											
+										</td>
+										<td width="2%" align="right" valign="top" nowrap>
+											&nbsp;									
+										</td>
+									</tr>
+								</table>
+								</div>									
+								</td>
+							</tr>
+							<tr>
+								<td align="center"  valign="top" nowrap>
+									&nbsp;
+								</td>
+							</tr>							
+						</table>	
+						<div id="ajax-result" style="display:block;text-align:center;" title="Server Message"><div class='search-option'>&nbsp;</div></div>						
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</div>

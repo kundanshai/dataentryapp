@@ -1,0 +1,143 @@
+<style>
+
+#colonyList-box {
+	z-index: 500;
+		filter: alpha(opacity=50); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+		-moz-opacity: .50; /*older Mozilla*/
+		-khtml-opacity: 0.5;   /*older Safari*/
+		opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#000000;
+		position:fixed; top:0px; left:0px; width:100%; height:50%; overflow-y:scroll; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+#colonyList-box-field {
+		z-index: 600;		
+		background-color:#fff;
+		border:5px solid #33CCCC;
+		width:50%;
+		overflow-y: scroll;
+		height:70%; 
+		align:center;
+		valign:middle;
+		color:#000;
+		position:absolute; 
+		top:0%; 
+		left:25%;
+		text-align:center;
+		/* Firefox */
+	    display:-moz-box;
+	    -moz-box-pack:center;
+	    -moz-box-align:center;
+	
+	    /* Safari and Chrome */
+	    display:-webkit-box;
+	    -webkit-box-pack:center;
+	    -webkit-box-align:center;
+	
+	    /* W3C */
+	    display:box;
+	    box-pack:center;
+	    box-align:center;		
+}
+</style>
+<script>
+    function popUpColonyListScreen(response) {
+    	window.scrollTo(0,0);
+    	if (null != document.getElementById('colonyList-box')
+				&& 'null' != document.getElementById('colonyList-box')) {
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmainhidden";
+			}
+			if(response!=null && response.length>0){
+				document.body.style.overflow = 'hidden';
+				var thediv = document.getElementById('colonyList-box');
+				thediv.style.display = "block";
+				thediv.style.height=$( document ).height();
+				thediv = document.getElementById('colonyList-box-field');
+				thediv.style.display = "block";
+				showColonyList(response);
+			}
+		}
+	  }
+	function showColonyList(response){
+		var colonyDetailList=response.split(":");
+		var tag="";
+		if(colonyDetailList.length>0 && colonyDetailList[0].length>0){
+			for(var i=0; i<colonyDetailList.length-1; i++){
+			var colonyDetail=colonyDetailList[i].split("-");
+			tag=tag+"<tr><td align='left'><input type='radio' width='50%' align='center' name='item' id='"+colonyDetail[1]+"' value='"+colonyDetailList[i]+"' />"+colonyDetail[0]+"</td></tr>";
+		}
+		tag='<table id="colonyTable">'+tag+'</table>';
+		document.getElementById('errorMsg').innerHTML='';
+		document.getElementById("listDiv").innerHTML=tag;
+		document.getElementById("listDiv").style.display='block';
+		document.getElementById('headerDiv').innerHTML="<font color='LightSeaGreen' size='2'><strong>Please Select Colony</strong></font><font color='Red'><sup>*</sup></font>";
+		document.getElementById('headerDiv').style.display='block';
+		document.getElementById('tableList').style.display='block';
+		}
+	}
+	function validateColony(){
+		document.getElementById('errorMsg').innerHTML='';
+		var colonyName;
+		var radios = document.getElementsByTagName('input');
+		for (var i = 0; i < radios.length; i++) {
+		    if (radios[i].type == 'radio' && radios[i].checked) {
+		    	colonyName = radios[i].value; 
+		    }
+		}
+		if(colonyName!=null && colonyName!='null'){
+			colonyName=Trim(colonyName);
+		}
+		if(colonyName==null || colonyName.length<=0){
+			document.getElementById('errorMsg').innerHTML="<font color='red'>Colony Name is Mandatory!</font>";
+			document.getElementById('errorMsg').style.display='block';
+			document.getElementById('tableList').style.display='block';
+			return;
+		}
+		document.body.style.overflow = 'auto';
+		fnGetColonyNameID(colonyName);
+	}
+	function hideColonyListScreen() {
+		if (null != document.getElementById('colonyList-box')
+				&& 'null' != document.getElementById('colonyList-box')){
+			var thediv = document.getElementById('colonyList-box');
+			thediv.style.display = "none";
+			thediv = document.getElementById('colonyList-box-field');
+			thediv.style.display = "none";
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {				
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmain";
+			}
+			document.body.style.overflow = 'auto';
+			document.getElementById('errorMsg').innerHTML="&nbsp;";
+		}
+	}
+</script>
+<div id="colonyList-box" style="display: none;" title=""></div>
+<div id="colonyList-box-field" style="display: none;">
+<p align="right"><a href="#"
+	onclick="javascript:hideColonyListScreen();"> <img
+	src="/DataEntryApp/images/invalid.gif" border="0"
+	title="Click to Return To Main Screen" /> </a></p>
+<div id="errorMsg" align='left'></div>	
+<div id="headerDiv" style="display:none;"></div>
+<br/>
+<div id="listDiv" style="display:none;" ></div>
+<table align="center" border="0" id="tableList" width="100%" style="display:none;">
+    <tr>
+	<td>&nbsp;</td>
+    </tr>
+    <tr>
+		<td align='center' ><input type="button" name="cnfrmColony" size="2"
+			id="cnfrmColony" value=" OK " class="groovybutton"
+			onclick="validateColony();" /></td>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+    </tr>
+</table>
+<br></br>
+</div>

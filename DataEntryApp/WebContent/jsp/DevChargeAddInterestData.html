@@ -1,0 +1,190 @@
+<style>
+
+#interestAdd-box {
+	z-index: 500;
+		filter: alpha(opacity=50); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+		-moz-opacity: .50; /*older Mozilla*/
+		-khtml-opacity: 0.5;   /*older Safari*/
+		opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#000000;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; overflow:hidden;overflow-y:auto; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+
+#interestAdd-box-field {
+		z-index: 600;		
+		background-color:#fff;
+		border:5px solid #33CCCC;
+		width:50%;
+		/*height:50%;*/
+		align:center;
+		valign:middle;
+		color:#000;
+		position:absolute; 
+		top:33%; 
+		left:25%;
+		text-align:center;
+		/* Firefox */
+	    display:-moz-box;
+	    -moz-box-pack:center;
+	    -moz-box-align:center;
+	
+	    /* Safari and Chrome */
+	    display:-webkit-box;
+	    -webkit-box-pack:center;
+	    -webkit-box-align:center;
+	
+	    /* W3C */
+	    display:box;
+	    box-pack:center;
+	    box-align:center;		
+}
+</style>
+<script>
+    var notifyDateInterest='';
+	function popUpAddInterestMasterData(notificationDate) {
+		window.scrollTo(0,0);	
+		if (null != document.getElementById('interestAdd-box')
+				&& 'null' != document.getElementById('interestAdd-box')) {
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmainhidden";
+			}
+			document.body.style.overflow = 'hidden';
+			var thediv = document.getElementById('interestAdd-box');
+			thediv.style.display = "block";
+			thediv.style.height=$( document ).height();
+			thediv = document.getElementById('interestAdd-box-field');
+			thediv.style.display = "block";
+			document.getElementById('interestPercentageRow').value="";
+			document.getElementById('interestStartDateRow').value="";
+			document.getElementById('interestAdd-box-field').focus();
+			notifyDateInterest=notificationDate;
+		   }
+	  }
+	function hideInterestAddDataScreen() {
+		if (null != document.getElementById('interestAdd-box')
+				&& 'null' != document.getElementById('interestAdd-box')){
+			var thediv = document.getElementById('interestAdd-box');
+			thediv.style.display = "none";
+			thediv = document.getElementById('interestAdd-box-field');
+			thediv.style.display = "none";
+			if (null != document.getElementById('djbmaintable')
+					&& 'null' != document.getElementById('djbmaintable')) {				
+				var theTable = document.getElementById('djbmaintable');
+				theTable.className = "djbmain";
+			}
+			document.body.style.overflow = 'auto';
+			document.getElementById('interestAddMsg').innerHTML="&nbsp;";
+		}
+	}
+	function addInterestDetails(){
+		document.getElementById('interestAddMsg').innerHTML="&nbsp;";
+		var interestPercentageRow = document.getElementById('interestPercentageRow').value
+		var interestStartDateRow = document.getElementById('interestStartDateRow').value
+		var interestEndDateRow = document.getElementById('interestEndDateRow').value
+		if(null==interestPercentageRow || interestPercentageRow.length<=0){
+			document.getElementById('interestAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Interest Percentage is Mandatory.</b></font>';
+			return false;
+		}
+		if(null==interestStartDateRow || interestStartDateRow.length<=0){
+			document.getElementById('interestAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Interest Start Date is Mandatory.</b></font>';
+			return false;
+		}
+		if(null==interestEndDateRow || interestEndDateRow.length<=0){
+			document.getElementById('interestAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Interest End Date is Mandatory.</b></font>';
+			return false;
+		}
+		if(!validateRate('interestPercentageRow', 'Interest Percentage', 'interestAddMsg')){
+			return false;
+		}
+		var splitStartDate = interestStartDateRow.split('/');
+		var splitEndDate = interestEndDateRow.split('/');
+	    var startDateFormat = new Date (splitStartDate[2], splitStartDate[1] - 1,splitStartDate[0]);
+	    var endDateFormat = new Date (splitEndDate[2], splitEndDate[1] - 1,splitEndDate[0]);
+		if(startDateFormat>endDateFormat){
+			document.getElementById('interestAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Start date cannot be after End date.</b></font>';
+			return false;
+		}
+		var splitNotifyDate = notifyDateInterest.split('/');
+		var notifyDateFormat = new  Date (splitNotifyDate[2], splitNotifyDate[1] - 1, splitNotifyDate[0]);
+		if(notifyDateFormat>startDateFormat){
+			document.getElementById('interestAddMsg').innerHTML='<font color="red" size="2"><b>&nbsp;Start date cannot be before Notification Date.</b></font>';
+			return false;
+		}
+		document.body.style.overflow = 'auto';
+		//saveInterestMasterDataRow(interestPercentageRow,interestStartDateRow,interestDocRow,
+		//		interestEndDateRow);
+		saveInterestMasterDataRow(interestPercentageRow,interestStartDateRow,
+				interestEndDateRow);
+	}
+	function checkVal(e){
+	    try {
+	        var unicode=e.charCode? e.charCode : e.keyCode;
+	            if (unicode!=8){ 
+	                if (unicode<48||unicode>57) 
+	                return false ;
+				}          
+	        }catch (e) {
+    	}    
+	}
+</script>
+<div id="interestAdd-box" style="display: none;"
+	title="Press Esc to Go To Main Screen"></div>
+<div id="interestAdd-box-field" style="display: none;">
+<p align="right"><a href="#"
+	onclick="javascript:hideInterestAddDataScreen();"> <img
+	src="/DataEntryApp/images/invalid.gif" border="0"
+	title="Click to Return To Main Screen" /> </a></p>
+<font color='LightSeaGreen' size="2"><strong>Add Interest Details</strong></font>
+<br></br>
+<table align="center" border="0" width="100%">
+    <tr>
+		<td align='left' colspan="3" id="interestAddMsg" nowrap>&nbsp;</td>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+		<td align='right' nowrap>Interest Percentage<sup><font color="red">*</font></sup></td>
+		<td align='left'>&nbsp;<input type="text" name="interestPercentageRow" id="interestPercentageRow" onpaste='return false' onkeypress='return checkValWithDot(event)' onblur="validateRate('interestPercentageRow', 'Interest Percentage', 'interestAddMsg');"/></td>
+		
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+	    <td align='right' nowrap>Start Date<sup><font color="red">*</font></sup></td>
+		<td align='left'>&nbsp;<input type="text" name="interestStartDateRow" id="interestStartDateRow" onpaste='return false' onfocus="showCalender('interestStartDateRow');"/></td>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+	    <td align='right' nowrap>End Date<sup><font color="red">*</font></sup></td>
+		<td align='left'>&nbsp;<input type="text" name="interestEndDateRow" id="interestEndDateRow" disabled="disabled" value="<%=DJBConstants.DEV_CHRG_ROW_DEFAULT_END_DATE %>"/></td>
+	</tr>
+	<tr>
+	   <!-- <td align='left'>&nbsp;</td>
+	    <td align='right'>&nbsp;</td>
+	    <td align='left'>&nbsp;</td>	
+		 <td align='right' nowrap>Rate Doc Proof</td>
+		<td align='left'>&nbsp;<input type="file" name="interestDocRow" id="interestDocRow" onpaste='return false'/></td> 
+	</tr> -->
+	    <td align='left'>&nbsp;</td>
+	<tr>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+		<td align='right'><input type="button" name="btnAddInterestDetails"
+			id="btnAddInterestDetails" value=" Save & Activate " class="groovybutton"
+			onclick="javascript:addInterestDetails();"/></td>
+		<td align='left'>&nbsp;</td>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+	    <td align='right'>&nbsp;</td>
+		<td align='right' colspan="3" nowrap><sup><font color="red">*</font></sup>&nbsp;Marked
+		Fields are Mandatory.</td>
+	</tr>
+	<tr>
+	    <td align='left'>&nbsp;</td>
+    </tr>
+</table>
+<br></br>
+</div>

@@ -1,0 +1,479 @@
+<style>
+	/* Added By 340132 on 23-07-2012 Start*/
+	#ccbox {
+		z-index: 500;
+		filter: alpha(opacity=100); /*older IE*/
+		filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100); /* IE */
+		-moz-opacity: 1.0; /*older Mozilla*/
+		-khtml-opacity: 1.0;   /*older Safari*/
+		opacity: 1.0;   /*supported by current Mozilla, Safari, and Opera*/
+		background-color:#FFF;
+		position:fixed; top:0px; left:0px; width:100%; height:100%; /*overflow:hidden;*/ color:#FFFFFF; text-align:center; vertical-align:middle;
+	}	
+</style>
+<script language="javascript">
+	<%MRDReadTypeLookup mrdReadTypeLookupMR= (MRDReadTypeLookup)session.getAttribute("mrdReadTypeLookup");
+	if(null!=mrdReadTypeLookupMR){%>		
+		var averageReadTypeMR="<%=mrdReadTypeLookupMR.getAverageReadType()%>";
+		var noBillingReadTypeMR="<%=mrdReadTypeLookupMR.getNoBillingReadType()%>";
+		var provisionalReadTypeMR="<%=mrdReadTypeLookupMR.getProvisionalReadType()%>";
+		var regularReadTypeMR="<%=mrdReadTypeLookupMR.getRegularReadType()%>";
+	<%}%>
+	var todaysDateMR="<%=(String)session.getAttribute("TodaysDate")%>";
+</script>
+<div id="ccbox" style="display: none;">
+<table width='100%' height='100%' align='center' >
+	<tr>
+		<td align='center' width='100%' height='100%'>
+			<table class="djbpage">
+			<tr height="20px">
+					<td align="center" valign="top">
+						<%@include file="../jsp/Header.html"%>
+					</td>
+				</tr>				
+				<tr>
+					<td  valign="top">
+						<div class="search-option" title="Server Message">
+							<font size="2"><span id="ccMessage"></span></font>&nbsp;
+						</div>			
+						<table width="100%" align="center" border="0" cellpadding="0" cellspacing="5px">
+							<tr>
+								<td align="left"  valign="top" width="100%">
+									<form name="cc" method="post" action="javascript:void(0);">
+									<input type="hidden" name="hidActionMR" id="hidActionMR"/>
+									<input type="hidden" name="slNo" id="slNo"/>
+									<input type="hidden" name="consumerTypeMR" id="consumerTypeMR"/>
+									<input type="hidden" name="consumerCategoryMR" id="consumerCategoryMR"/>
+									<input type="hidden" name="consumerStatusMR" id="consumerStatusMR"/>
+									<input type="hidden" name="isLNTServiceProvider" id="isLNTServiceProvider"/>
+									<fieldset>
+										<legend>Change of Category Details</legend>
+										<table width="98%" align="center" border="0" cellpadding="0" cellspacing="0">
+											<tr style="background-color:#21c5d8;color:#fff;">
+												<td align="center" width="25%" colspan="4">
+													<b>Meter Reader Field Visit Remarks</b>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%">
+													<label>Meter Reader Name</label>
+												</td>
+												<td align="left" width="25%" title="Meter Reader Name">
+													<input type="text" name="meterReaderName" id="meterReaderName"  maxlength="20" class="textbox"  style="text-align:left;" onchange="fnEnableSaveButton();"/>
+												</td>
+												<td align="left" width="25%">
+													<label>Bill Round</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" title="Bill Round">
+													<select name="billRoundMR" id="billRoundMR" class="selectbox" onchange="fnResetDeatils();fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList billRoundList=(ArrayList)session.getAttribute("billWindowList");
+												  			if(null!=billRoundList && billRoundList.size()>0){	
+												  				for(int b=0;b < billRoundList.size();b++){										  			
+												  		%>
+												  		<option value="<%=billRoundList.get(b)%>"><%=billRoundList.get(b)%></option>
+												  		<%		}
+												  			}
+												  		%>
+												  	</select> 
+												</td>
+											</tr>	
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr style="background-color:#21c5d8;color:#fff;">
+												<td align="center" width="25%" colspan="4">
+													<b>Customer Information</b>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%">
+													<label>Zone</label><font color="red"><sup>*</sup></font>
+												</td>												
+												<td align="left" width="25%" title="Zone">
+													<select name="zoneMR" id="zoneMR" class="selectbox-long" onchange="fnSetMRNo(this);fnEnableSaveButton();" onfocus="fnCheckBillRound();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList zoneList=(ArrayList)session.getAttribute("zoneList");
+												  			if(null!=zoneList && zoneList.size()>0){	
+												  				for(int z=0;z < zoneList.size();z++){										  			
+												  		%>
+												  		<option value="<%=zoneList.get(z)%>"><%=zoneList.get(z)%></option>
+												  		<%		}
+												  			}
+												  		%>
+												  	</select> 
+												</td>
+												<td align="left" width="25%">
+													<label>MR No</label><font color="red"><sup>*</sup></font>
+												</td>												
+												<td align="left" width="25%" title="MR No">
+													<select name="mrNoMR" id="mrNoMR" class="selectbox" onfocus="fnCheckZone(this);" onchange="fnSetArea(this);fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  	</select> 
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%">
+													<label>Area</label><font color="red"><sup>*</sup></font>
+												</td>												
+												<td align="left" width="25%" title="Area">
+													<select name="areaMR" id="areaMR" class="selectbox-long" onfocus="fnCheckZoneMRNo(this);" onchange="fnGetConsumerDetailsByZMAW();fnEnableSaveButton();">
+												  		<option value="">Please Select</option>												  		
+												  	</select> 
+												</td>
+												<td align="left" width="25%">
+													<label>WC No</label><font color="red"><sup>*</sup></font>
+												</td>												
+												<td align="left" width="25%" title="Water Connection No">
+													<input type="text" name="wcNoMR" id="wcNoMR"  maxlength="10" class="textbox"  style="text-align:left;" onchange="fnGetConsumerDetailsByZMAW();fnEnableSaveButton();"/>
+												</td>
+											</tr>	
+											<tr>
+												<td align="left" width="25%">
+													<label>KNO</label><font color="red"><sup>*</sup></font>
+												</td>												
+												<td align="left" width="25%" title="KNO of the Consumer">
+													<input type="text" name="knoMR" id="knoMR"  maxlength="10" class="textbox"  style="text-align:left;" onfocus="fnCheckBillRound();" onchange="fnGetConsumerDetailsByKNO();fnEnableSaveButton();"/>
+												</td>												
+												<td align="center"" width="50%" rowspan="2">
+													<img src="/DataEntryApp/images/info-bulb.gif"  border="0" title="Select Bill Round and Enter 10 Digits KNO or Select Zone MR Area & WC No to populate details."/>
+												</td>
+											</tr>	
+											<tr>
+												<td align="left" width="25%">
+													<label>Name</label>
+												</td>												
+												<td align="left" width="75%" colspan="3" >
+													<input type="text" name="nameMR" id="nameMR"  maxlength="100" class="textbox-long"  style="text-align:left;" disabled="disabled" title="Name of the Consumer"/>
+												</td>
+											</tr>	
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr style="background-color:#21c5d8;color:#fff;">
+												<td align="center" width="25%" colspan="4">
+													<b>Property Details</b>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%">
+													<label>Water Connection Use</label>
+												</td>												
+												<td id="waterConnectionUseMRId" align="left" width="25%" title="Use of Water Connection">
+													<select name="waterConnectionUseMR" id="waterConnectionUseMR" class="selectbox-long" onchange="fnSetwaterConnectionUseMRTitle(this);fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList waterConnectionUseList=(ArrayList)session.getAttribute("waterConnectionUseList");
+												  		if(null!=waterConnectionUseList){
+													  		for(int c=0; c < waterConnectionUseList.size();c++){ 
+													  		%>
+													  		<option value="<%=waterConnectionUseList.get(c)%>"><%=waterConnectionUseList.get(c)%></option>
+												  		<%}} %>	
+												  	</select> 
+												</td>
+												<td align="left" width="25%"  title="Water Connection Size. Default value is 15 mm.">
+													<label>Water Connection Size</label><font color="red"><sup>*</sup></font>
+												</td>												
+												<td align="left" width="25%" nowrap title="Water Connection Size. Default value is 15 mm.">
+													<select name="waterConnectionSizeMR" id="waterConnectionSizeMR" class="selectbox" onchange="fnEnableSaveButton();fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList waterConnectionSizeList=(ArrayList)session.getAttribute("waterConnectionSizeList");
+												  		if(null!=waterConnectionSizeList){
+													  		for(int c=0; c < waterConnectionSizeList.size();c++){ 
+													  		%>
+													  		<option value="<%=waterConnectionSizeList.get(c)%>"><%=waterConnectionSizeList.get(c)%></option>
+												  		<%}} %>												  		
+												  	</select> mm
+												</td>												
+											</tr>	
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr style="background-color:#21c5d8;color:#fff;">
+												<td align="center" width="25%" colspan="4">
+													<b>New Meter Details</b>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%" >
+													<label>Meter Type</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Meter Type">
+													<select name="meterType" id="meterType" class="selectbox" onchange="fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList meterTypeList=(ArrayList)session.getAttribute("DJBMeterTypeList");
+												  		if(null!=meterTypeList){
+													  		MeterTypeLookup meterTypeLookup=null;
+													  		for(int m=0; m < meterTypeList.size();m++){ 
+													  			meterTypeLookup=(MeterTypeLookup) meterTypeList.get(m);
+												  		%>
+												  		<option value="<%=meterTypeLookup.getMeterTypeCode() %>"><%=meterTypeLookup.getMeterTypeDesc() %></option>
+												  		<%}} %>
+												  	</select> 														
+												</td>
+												<td align="left" width="25%" title="Badge No of the Meter Installed. Default value is NA.">
+													<label>Badge No</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Badge No of the Meter Installed. Default value is NA.">
+													<input type="text" name="badgeNoMR" id="badgeNoMR" maxlength="50" style="text-align:left;" class="textbox" onchange="fnEnableSaveButton();"/>
+													
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" >
+													<label>Manufacturer</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Manufacturer of the Meter Installed">
+													<select name="manufacturerMR" id="manufacturerMR" class="selectbox" onchange="fnEnableSaveButton();fnCheckModel(this);">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList manufacturerDetailsList=(ArrayList)session.getAttribute("manufacturerDetailsList");
+												  		if(null!=manufacturerDetailsList){
+													  		ManufacturerDetailsLookup manufacturerDetailsLookup=null;
+													  		for(int m=0; m < manufacturerDetailsList.size();m++){ 
+													  			manufacturerDetailsLookup=(ManufacturerDetailsLookup) manufacturerDetailsList.get(m);
+												  		%>
+												  		<option value="<%=manufacturerDetailsLookup.getManufacturerCode() %>"><%=manufacturerDetailsLookup.getManufacturerDesc() %></option>
+												  		<%}} %>
+												  	</select> 
+												</td>
+												<td align="left" width="25%" >
+													<label>Model</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Model of the Meter Installed">
+													<select name="modelMR" id="modelMR" class="selectbox" onchange="fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList modelDetailsList=(ArrayList)session.getAttribute("modelDetailsList");
+												  		if(null!=modelDetailsList){
+													  		ModelDetailsLookup modelDetailsLookup=null;
+													  		for(int m=0; m < modelDetailsList.size();m++){ 
+													  			modelDetailsLookup=(ModelDetailsLookup) modelDetailsList.get(m);
+												  		%>
+												  		<option value="<%=modelDetailsLookup.getModelCode() %>"><%=modelDetailsLookup.getModelDesc() %></option>
+												  		<%}} %>
+												  	</select> 
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" >
+													<label>SA Type</label>
+												</td>
+												<td id="saTypeID" align="left" width="25%" nowrap title="SA Type">
+													<select name="saType" id="saType" class="selectbox" onchange="fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<% ArrayList saTypeList=(ArrayList)session.getAttribute("saTypeList");
+												  		if(null!=saTypeList){
+												  		SATypeDetails saTypeDetails=null;
+												  		for(int s=0; s < saTypeList.size();s++){ 
+												  			saTypeDetails=(SATypeDetails) saTypeList.get(s);
+												  		%>
+												  		<option value="<%=saTypeDetails.getSaTypeCode()%>"><%=saTypeDetails.getSaTypeDesc()%></option>
+												  		<%}} %>
+												  	</select> 
+												  	<img src="/DataEntryApp/images/info-bulb.gif" height="20" border="0" title="Only Applicable for an Unmetered Consumer."/>	
+												</td>
+												<td align="left" width="50%" colspan="2">
+													&nbsp;
+												</td>
+												<!-- 
+												<td align="left" width="25%">
+													<label> Is L&T service provider</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap>
+													<select name="isLNTServiceProvider" id="isLNTServiceProvider" class="selectbox">
+												  		<option value="">Please Select</option>
+												  		<option value="N">NO</option>
+												  		<option value="Y">YES</option>
+												  	</select>													
+												</td> -->
+											</tr>												
+											<tr>
+												<td align="left" width="25%" nowrap>
+													<label>Meter Installation Date </label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Meter Installation Date in DD/MM/YYYY format">
+														<input type="text" name="meterInstalDate" id="meterInstalDate"  maxlength="10" class="textbox"  style="text-align:center;" onfocus="resetMeterInstalDate();" onblur="setMeterInstalDate();" onchange="fnEnableSaveButton();"/>
+														<font size="0.5">(DD/MM/YYYY)</font>
+												</td>
+												<td align="left" width="25%" nowrap>
+													<label>Re-enter</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm Meter Installation Date in DD/MM/YYYY format">
+													<input type="text" name="meterInstalDateConfirm" id="meterInstalDateConfirm"  maxlength="10" class="textbox"  style="text-align:center;" onblur="fnCheckMeterInstalDateConfirm();" onfocus="fnSetDefaultValue();"/><span id="meterInstalDateConfirmSpan"></span>
+												</td>												
+											</tr>
+											<tr>
+												<td align="left" width="25%" >
+													<label>Zero Read </label>
+												</td>
+												<td align="left" width="25%" nowrap title="Zero Read">
+													<input type="text" name="zeroReadMR" id="zeroReadMR" maxlength="20" style="text-align:right;" class="textbox" onfocus="resetZeroReadMR();" onblur="setZeroReadMR();" onchange="fnEnableSaveButton();"/>
+													<img src="/DataEntryApp/images/info-bulb.gif" height="20" border="0" title="Zero Read Will be taken as 0 if not entered."/>
+												</td>
+												<td align="left" width="25%" >
+													<label>Re-enter</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm Zero Read">
+													<input type="text" name="zeroReadConfirmMR" id="zeroReadConfirmMR" maxlength="20" style="text-align:right;" class="textbox" onblur="fnCheckZeroReadMRConfirm();"/><span id="zeroReadConfirmMRSpan"></span>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr style="background-color:#21c5d8;color:#fff;">
+												<td align="center" width="25%" colspan="4">
+													<b>New Meter Read Details</b>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%" nowrap>
+													<label>Current Meter Read Date</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Current Meter Read Date in DD/MM/YYYY format">
+													<input type="text" name="currentMeterReadDateMR" id="currentMeterReadDateMR" maxlength="10" style="text-align:center;" class="textbox" onfocus="resetCurrentMeterReadDateMR();" onblur="setCurrentMeterReadDateMR();" onchange="fnEnableSaveButton();"/>
+													<font size="0.5">(DD/MM/YYYY)</font>
+												</td>
+												<td align="left" width="25%" nowrap>
+													<label>Re-enter</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm Current Meter Read Date in DD/MM/YYYY format">
+													<input type="text" name="currentMeterReadDateConfirmMR" id="currentMeterReadDateConfirmMR" maxlength="10" style="text-align:center;" class="textbox" onblur="fnCheckCurrentMeterReadDateMRConfirm();"/><span id="currentMeterReadDateConfirmMRSpan"></span>
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" nowrap>
+													<label>Meter Read Remark Code</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Current Meter Reader Remark Code.">
+													<select name="currentMeterReadRemarkCode" id="currentMeterReadRemarkCode" class="selectbox" onchange="setMeterReadStatusMR(this);fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<%	if(null!=meterReadStatusList){
+												  			for(int m=0; m < meterReadStatusList.size();m++){ %>
+												  		<option value="<%=meterReadStatusList.get(m)%>"><%=meterReadStatusList.get(m)%></option>
+												  		<%}} %>
+													</select>
+													<img src="/DataEntryApp/images/info-bulb.gif" height="20" border="0" title="Before selecting Be Sure Consumer Name is Populated."/>	
+												</td>
+												<td align="left" width="50%" colspan="2" nowrap>																																				
+													Read Type&nbsp;<span id="meterReadTypeSpanMR"><b>NA</b></span>&nbsp;&nbsp;Billing&nbsp;<span id="billTypeSpanMR"><b>NA</b></span>																			
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" nowrap>
+													<label>Current Meter Read</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Current Registered Meter Read">
+													<input type="text" name="currentMeterRegisterReadMR" id="currentMeterRegisterReadMR" maxlength="20" style="text-align:right;" class="textbox" onfocus="resetCurrentMeterRegisterReadMR();" onblur="setCurrentMeterRegisterReadMR();" onchange="fnEnableSaveButton();"/>&nbsp;KL
+												</td>
+												<td align="left" width="25%" nowrap>
+													<label>Re-enter</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm Current Registered Meter Read">
+													<input type="text" name="currentMeterRegisterReadConfirmMR" id="currentMeterRegisterReadConfirmMR" maxlength="20" style="text-align:right;" class="textbox" onblur="fnCheckCurrentMeterRegisterReadMRConfirm();"/>&nbsp;KL<span id="currentMeterRegisterReadConfirmMRSpan"></span>
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" nowrap>
+													<label>Current Average Consumption</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Current Average Consumption">
+													<input type="text" name="currentAverageConsumptionMR" id="currentAverageConsumptionMR" maxlength="20" style="text-align:right;" class="textbox" disabled="disabled"/>&nbsp;KL
+												</td>
+												<td align="left" width="25%" nowrap>
+													&nbsp;
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm Current Average Consumption">
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" nowrap>
+													<label>New Average Consumption</label>
+												</td>
+												<td align="left" width="25%" nowrap title="New Average Consumption">
+													<input type="text" name="newAverageConsumptionMR" id="newAverageConsumptionMR" maxlength="20" style="text-align:right;" class="textbox" onfocus="resetNewAverageConsumptionMR();" onblur="setNewAverageConsumptionMR();" onchange="fnEnableSaveButton();"/>&nbsp;KL
+												</td>
+												<td align="left" width="25%" nowrap>
+													<label>Re-enter</label>
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm New Average Consumption">
+													<input type="text" name="newAverageConsumptionConfirmMR" id="newAverageConsumptionConfirmMR" maxlength="20" style="text-align:right;" class="textbox" onblur="fnCheckNewAverageConsumptionMRConfirm();"/><span id="newAverageConsumptionConfirmMRSpan"></span>&nbsp;KL
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr style="background-color:#21c5d8;color:#fff;">
+												<td align="center" width="25%" colspan="4">
+													<b>Old Meter Read Details</b>
+												</td>
+											</tr>
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%" >
+													<label>Meter Reader Remark Code</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Meter Reader Remark Code of Old Meter">
+													<select name="oldMeterReadRemarkCode" id="oldMeterReadRemarkCode" class="selectbox" onchange="fnCheckOldMeterReadRemarkCode(this);fnEnableSaveButton();">
+												  		<option value="">Please Select</option>
+												  		<%if(null!=meterReadStatusList){
+												  			for(int m=0; m < meterReadStatusList.size();m++){ %>
+												  		<option value="<%=meterReadStatusList.get(m)%>"><%=meterReadStatusList.get(m)%></option>
+												  		<%}}%>
+													</select>	
+												</td>
+												<td align="left" width="25%" >
+													<label>SA Type</label>
+												</td>
+												<td align="left" width="25%" nowrap>
+												<input type="text" name="oldSATypeMR" id="oldSATypeMR" style="text-align:left;" class="textbox" disabled="disbled"/>
+													<!-- <select name="oldSATypeMR" id="oldSATypeMR" class="selectbox" disabled="disabled">
+												  		<option value="">Please Select</option>
+												  		<% if(null!=saTypeList){
+												  		SATypeDetails saTypeDetails=null;
+												  		for(int s=0; s < saTypeList.size();s++){ 
+												  			saTypeDetails=(SATypeDetails) saTypeList.get(s);
+												  		%>
+												  		<option value="<%=saTypeDetails.getSaTypeCode()%>"><%=saTypeDetails.getSaTypeDesc()%></option>
+												  		<%}} %>
+												  	</select> 
+												  	 -->
+												</td>
+											</tr>
+											<tr>
+												<td align="left" width="25%" >
+													<label>Registered Read </label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Registered Read of Old Meter">
+													<input type="text" name="oldMeterRegisterReadMR" id="oldMeterRegisterReadMR" maxlength="20" style="text-align:right;" class="textbox" onfocus="resetOldMeterRegisterReadMR();" onblur="setOldMeterRegisterReadMR();" onchange="fnEnableSaveButton();"/>
+												</td>
+												<td align="left" width="25%" >
+													<label>Re-enter</label><font color="red"><sup>*</sup></font>
+												</td>
+												<td align="left" width="25%" nowrap title="Confirm Registered Read of Old Meter">
+													<input type="text" name="oldMeterRegisterReadConfirmMR" id="oldMeterRegisterReadConfirmMR" maxlength="20" style="text-align:right;" class="textbox" onblur="fnCheckOldMeterRegisterReadMRConfirm();"/><span id="oldMeterRegisterReadConfirmMRSpan"></span>
+												</td>
+											</tr>											
+											<tr><td align="left" colspan="4">&nbsp;</td></tr>
+											<tr>
+												<td align="left" width="25%" >
+													&nbsp;
+												</td>
+												<td align="center" width="50%" colspan="2" nowrap>				
+													<input type="button" id="btnSaveMR" value=" Save " class="groovybutton" onclick="javascript:fnSaveMeterReplacementDetails();" title="Click to save Meter Relacement details."/>									
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="button"  value=" Reset " class="groovybutton" onclick="javascript:fnResetMeterReplacementDetails();" title="Click to reset all fields."/>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<span id="btnCloseSpan"></span>
+												</td>
+												<td align="left" width="25%" >
+													&nbsp;
+												</td>								
+											</tr>
+											<tr><td align="right" colspan="4">&nbsp;<font size="0.9em" color="red">*</font><font size="0.5em" color="blue">=Mandatory Fields </font></td></tr>
+										</table>
+									</fieldset>
+									</form>	
+								</td>
+							</tr>
+						</table>							
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</div>

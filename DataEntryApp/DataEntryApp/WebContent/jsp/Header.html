@@ -1,0 +1,67 @@
+<% Map <String ,String>	roleScreenMap=(HashMap<String ,String>)session.getAttribute("roleScreenMap");%> 
+<% Map <String ,String>	userScreenMap=(HashMap<String ,String>)session.getAttribute("userScreenMap");%>  
+<% String userId = (String) session.getAttribute("userId"); %>
+<% String userRoleId=(String)session.getAttribute("userRoleId"); %>
+<div class="header">
+<table width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td align="left" width="1%" valign="top">
+			<img src="/DataEntryApp/images/logo.png" alt="Logo" border="0"/>
+		</td>
+		<td align="left" width="20%" valign="top">
+			<div class="header-rms">&nbsp;Revenue Management System<br />
+			&nbsp;Delhi Jal Board</div>
+			</td>
+		<td align="right" valign="top">
+			<div class="toplinks"><a
+				href="/DJBPortal/portals/DJBCustomer.portal?_nfpb=true&amp;_st=&amp;_pageLabel=DJBRMS&pageContent=AboutRMS">About
+			RMS</a><a
+				href="/DJBPortal/portals/DJBCustomer.portal?_nfpb=true&amp;_st=&amp;_pageLabel=DJBRMS&pageContent=ContactUs">Contact
+			Us</a> <a
+				href="/DJBPortal/portals/DJBCustomer.portal?_nfpb=true&amp;_st=&amp;_pageLabel=DJBRMS&pageContent=Sitemap">Sitemap</a>
+			<a
+				href="/DJBPortal/portals/DJBCustomer.portal?_nfpb=true&amp;_st=&amp;_pageLabel=faq">FAQ</a>&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
+		</td>
+	</tr>
+</table>
+<script language=javascript>
+		function goHome()
+		{
+			hideScreen();
+			DeleteCookie("IsRefresh");
+			document.location.href="home.action";
+		}
+		function goLogout()
+		{
+			hideScreen();
+			DeleteCookie("IsRefresh");
+			document.location.href="logout.action";
+		}		
+ 	</script>
+<table width="100%" align="center" border="0">
+	<s:if test="null!=#session.userRoleDesc">
+	<tr>
+		<td align="left" width="50%" valign="top">
+		<a href="#" onclick="javascript:goHome()" class="home">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+		</td>
+		<td align="center" width="3%" valign="top">
+			&nbsp;<!--<a href="#" onclick="javascript:goHome()"><img src="/DataEntryApp/images/home.gif"  border="0" title="Go To Home Page"/></a>-->
+		</td>
+		<td align="right" width="40%" valign="top">
+			<div class="welcome-text" title="Last Login <s:property value="#session.lastLoginTime" />">Welcome <b><s:property value="#session.userName" /></b>&nbsp;|&nbsp;Role:&nbsp;<s:property value="#session.userRoleDesc" />.</div>
+		</td>
+		<td align="right" width="7%" valign="top">
+			<a href="#" onclick="goLogout();" class="logout" title="Logout">&nbsp;&nbsp;Logout&nbsp;&nbsp;</a>		
+		</td>
+	</tr>
+	</s:if>
+	<s:else>
+	<tr>
+		<td align="right" width="100%" valign="top">
+			<a href="#" onclick="goLogout();" class="logout" title="Logout">&nbsp;&nbsp;Logout&nbsp;&nbsp;</a>			
+		</td>
+	</tr>
+	</s:else>
+</table>
+</div>

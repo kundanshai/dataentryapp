@@ -1,0 +1,590 @@
+/* @history: Edited by Rajib Hazarika (682667) on 23-03-2016 as per Open project Id-817. */
+body { /*background: #000;*/ /*background: #F7F7F7;*/
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+td {
+	font-size: 0.8em;
+}
+
+.djbmain {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	align: center;
+	border: 0;
+	border-collapse:collapse;	
+	cellpadding: 0;
+	cellspacing: 0;
+	background: #FFF;
+	z-index: 1;
+}
+
+.djbmainhidden {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	align: center;
+	border: 0;
+	border-collapse:collapse;	
+	cellpadding: 0;
+	cellspacing: 0;
+	background: #FFF;
+	z-index: -1;
+}
+
+.djbpage {
+	width: 100%;
+	height: 100%;
+	align: center;
+	cellpadding: 0;
+	cellspacing: 0;
+	border-top: 0;
+	border-bottom: 0;
+	border-left: 1px #fff solid;
+	border-right: 1px #fff solid;
+	border-collapse:collapse;	
+	background: #F7F7F7;
+}
+
+.djbpage-head {
+	width: 962px;
+	height: 25px;
+	position: fixed;
+	top: 26px;
+	margin: 0;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	/*border-top:1px solid #F7F7F7;*/
+	border-bottom: 2px solid #fff;
+	background: #F7F7F9;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font: 1.4em bold uppercase;
+	color: #000;
+}
+
+.header {
+	width: 100%;
+	height: 130px;
+	position: relative;
+	float:left;
+	top: 0;
+	margin: 0;
+	border: 0;
+	border-collapse:collapse;	
+	/*border-left:1px solid #000;
+	border-right:1px solid #000;*/
+	border-top: 1px solid #000;
+	/*border-bottom:1px solid #fff;*/
+	background: #F7F7F7 url('images/djb_header_bg.png') repeat-x;
+}
+.header-rms {
+	width: 500px;
+	heigh: 25px;
+	float:left;
+	padding: 0;
+	margin: 0;
+	font-size: 25px;
+	border: 0;
+	position: relative;
+	font-family: Times New Roman;
+	font-weight: 900;
+	color: #fff;
+}
+
+.toplinks {
+	align:right;
+	text-align: right;
+	top: 5px;
+	float: right;
+	display:block;/* toplink removed on 30-05-2012*/
+}
+
+.toplinks a {
+	align: right;
+	color: #CACAD4;
+	margin-left: 20px;
+}
+
+.toplinks a:hover {
+	color: #fff;
+}
+.footer {
+	width: 100%;
+	height: 85px;
+	position: relative;
+	float:left;
+	bottom: 0;
+	margin: 0;
+	/*border-left:1px solid #000;
+	border-right:1px solid #000;
+	/*border-top:1px solid #21c5d8;*/
+	border-bottom: 1px solid #000;
+	background: #29C7CE url('images/djb_footer_bg.png') repeat-x;
+}
+
+.paged-main-div {
+	width: 960px;
+	padding: 0;
+	margin: 0;
+	/*border: 1px solid #000;*/
+	background-color: #f7f7f7;
+	border:0;
+	border-collapse:collapse;		
+}
+
+.paged-div { /*border: 1px solid #ff0;*/
+	width: auto;
+	margin: 0;
+	padding: 0;
+	background-color: #f7f7f7;
+	border:0;
+	border-collapse:collapse;	
+}
+
+fieldset { /*padding:0 1.4em 1.4em 1.4em; 
+	margin: 0 0 1.5em 0; */
+	border: #21c5d8 1px solid;
+}
+
+legend {
+	font-weight: bold;
+	font-size: 1em;
+	/*margin-top:-0.2em; 
+	margin-bottom:1em; */
+	color: #21c5d8;
+}
+
+label {
+	font-weight: regular;
+	font-size: 1.0em;
+}
+
+fieldset,#IE8#HACK {
+	padding-top: 1px;
+}
+
+legend,#IE8#HACK {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.selectbox {
+	border: 1px #21c5d8 solid;
+	width: 130px;
+	padding: 2px;
+	margin: 2px;
+	height: 22px;
+	font: 12px;
+}
+
+.selectbox-long {
+	border: #21c5d8 1px solid;
+	width: 300px;
+	height: 22px;
+	padding: 2px;
+	margin: 2px;
+	font: 12px;
+}
+
+.selectbox-longfocus {
+	border: red 1px solid;
+	width: 300px;
+	height: 22px;
+	padding: 2px;
+	margin: 2px;
+	font: 12px;
+}
+
+.textbox {
+	border: #21c5d8 1px solid;
+	height: 18px;
+	font-size: 12px;
+}
+.choosentd {
+	height: 18px;
+	font-size: 12px;
+}
+
+.textboxfocus {
+	border: red 1px solid;
+	height: 18px;
+	font-size: 12px;
+}
+
+input.textbox:focus { /*border: #00FF00 1px solid;*/
+	BORDER-BOTTOM-COLOR: #666;
+	BORDER-TOP-COLOR: #666;
+	BORDER-RIGHT-COLOR: #666;
+	BORDER-LEFT-COLOR: #666
+}
+
+.textbox-long {
+	border: #21c5d8 1px solid;
+	width: 300px;
+	height: 18px;
+	font-size: 12px;
+}
+
+.textbox-longfocus {
+	border: red 1px solid;
+	width: 300px;
+	height: 18px;
+	font-size: 12px;
+}
+.textarea {
+	border: #21c5d8 1px solid;
+	/*width: 300px;*/
+	font-size: 12px;
+}
+
+.textarea-focus {
+	border: red 1px solid;
+	/*width: 300px;*/
+	font-size: 12px;
+}
+/*.textbox-long:focus {
+	border: #00FF00 1px solid;*/
+	/*BORDER-BOTTOM-COLOR: #666; BORDER-TOP-COLOR: #666; BORDER-RIGHT-COLOR: #666; BORDER-LEFT-COLOR: #666*/
+	/*}*/
+input.password {
+	border: #21c5d8 1px solid;
+	width: 130px;
+	height: 18px;
+	font-size: 12px;
+}
+
+.password {
+	border: #21c5d8 1px solid;
+	width: 130px;
+	height: 18px;
+	font-size: 12px;
+}
+
+.passwordfocus {
+	border: red 1px solid;
+	width: 130px;
+	height: 18px;
+	font-size: 12px;
+}
+input.passwordfocus {
+	border: red 1px solid;
+	width: 130px;
+	height: 18px;
+	font-size: 12px;
+}
+input.password:focus { /*border: #00FF00 1px solid;*/
+	BORDER-BOTTOM-COLOR: #666;
+	BORDER-TOP-COLOR: #666;
+	BORDER-RIGHT-COLOR: #666;
+	BORDER-LEFT-COLOR: #666
+}
+
+input.groovybutton {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton.png') repeat-x;
+	border: #147abc 1px solid;
+	text-align: center;
+	color: #000;
+}
+
+input.groovybutton:hover {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton-hover.png') repeat-x;
+	border: #147aabc 1px solid;
+	text-align: center;
+	color: #fff;
+}
+.groovybutton {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton.png') repeat-x;
+	border: #147abc 1px solid;
+	text-align: center;
+	color: #000;
+}
+
+.groovybutton:hover {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton-hover.png') repeat-x;
+	border: #147aabc 1px solid;
+	text-align: center;
+	color: #fff;
+}
+.btnLink {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton.png') repeat-x;
+	border: #147abc 1px solid;
+	text-align: center;
+	text-decoration: none;
+	color: #000;
+}
+
+.btnLink:hover {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton-hover.png') repeat-x;
+	border: #147aabc 1px solid;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+}
+
+.smallbutton {
+	height: 18px;
+	padding-left: 1px;
+	padding-right: 1px;
+	background: #FF9900;
+	border: #147abc 1px solid;
+	text-align: center;
+	font: 0.8em;
+	color: #fff;
+}
+
+.smalldropdown {
+	height: 18px;
+	padding-left: 1px;
+	padding-right: 1px;
+	border: 1px #21c5d8 solid;
+	font: 12px;
+	color: #000;
+}
+
+.message {
+	width: 100%;
+	padding: 2px;
+	margin: 0 5px 0 5px;
+	border: 1px solid #FF9900;
+	text-align: left;
+}
+
+.search-option {
+	width: 100%;
+	padding: 2px;
+	margin: 0 5px 0 5px;
+	border: 1px solid #FF9900;
+}
+
+.page-nos {
+	width: 100%;
+	height: auto;
+	padding: 2px;
+	margin: 0;
+	font: 0.8em;
+}
+
+.currentPageNo {
+	padding: 1px 5px 1px 5px;
+	border: 0;
+	background: #FF9900;
+	color: #fff;
+	font: 0.8em;
+}
+
+.pageNo {
+	padding: 1px 5px 1px 5px;
+	border: 1px solid #21c5d8;
+	background: #fff;
+	color: #000;
+	cursor: pointer;
+	font: 0.8em;
+}
+
+.pageNo:hover {
+	background: #FF9900;
+	color: #fff;
+	cursor: pointer;
+}
+
+.prev {
+	padding: 1px;
+	border: 1px solid #21c5d8;
+	background: #21c5d8;
+	color: #fff;
+	cursor: pointer;
+	font: 0.8em bold;
+}
+
+.next {
+	padding: 1px;
+	border: 1px solid #21c5d8;
+	background: #21c5d8;
+	color: #fff;
+	cursor: pointer;
+	font: 0.8em bold;
+}
+
+.text-label {
+	color: #848484;
+	font-size: 12px;
+}
+
+.table-grid {
+	width: 98%;
+	align: center;
+	border: 2px solid #33CCCC;
+	border-collapse:collapse;
+	cellpadding: 1px;
+	cellspacing: 10px;
+	font: 1.0em;
+}
+
+.table-grid tr {
+	border: 1px solid #33CCCC;
+}
+
+.table-grid td {
+	border: 1px solid #33CCCC;
+}
+
+.table-grid th {
+	background: #21c5d8;
+	border: 1px solid #fff;
+	color: #fff;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/*a:active {text-decoration:underline;}*/
+TABLE.tablesorter {
+	width: 98%;
+	align: center;
+	border: 1px solid #33CCCC;
+	cellpadding: 10px;
+	cellspacing: 10px;
+	font: 1.0em;
+}
+
+TABLE.tablesorter THEAD TR TH {
+	BORDER-BOTTOM: #fff 1px solid;
+	BORDER-LEFT: #fff 1px solid;
+	PADDING-BOTTOM: 4px;
+	BACKGROUND-COLOR: #e6eeee;
+	PADDING-LEFT: 4px;
+	PADDING-RIGHT: 4px;
+	FONT-SIZE: 8pt;
+	BORDER-TOP: #fff 1px solid;
+	BORDER-RIGHT: #fff 1px solid;
+	PADDING-TOP: 4px
+}
+
+TABLE.tablesorter TFOOT TR TH {
+	BORDER-BOTTOM: #fff 1px solid;
+	BORDER-LEFT: #fff 1px solid;
+	PADDING-BOTTOM: 4px;
+	BACKGROUND-COLOR: #e6eeee;
+	PADDING-LEFT: 4px;
+	PADDING-RIGHT: 4px;
+	FONT-SIZE: 8pt;
+	BORDER-TOP: #fff 1px solid;
+	BORDER-RIGHT: #fff 1px solid;
+	PADDING-TOP: 4px
+}
+
+TABLE.tablesorter THEAD TR .header {
+	background: #21c5d8;
+	color: #fff;
+	BACKGROUND-IMAGE: url(images/th-bg.gif);
+	BACKGROUND-REPEAT: no-repeat;
+	BACKGROUND-POSITION: right center;
+	CURSOR: pointer
+}
+
+TABLE.tablesorter TBODY TD {
+	border: 1px dotted #33CCCC;
+}
+
+TABLE.tablesorter TBODY TR.odd TD {
+	BACKGROUND-COLOR: #f0f0f6
+}
+
+TABLE.tablesorter THEAD TR .headerSortUp {
+	BACKGROUND-IMAGE: url(images/asc.gif)
+}
+
+TABLE.tablesorter THEAD TR .headerSortDown {
+	BACKGROUND-IMAGE: url(images/desc.gif)
+}
+
+TABLE.tablesorter THEAD TR .headerSortDown {
+	BACKGROUND-COLOR: #8dbdd8
+}
+
+TABLE.tablesorter THEAD TR .headerSortUp {
+	BACKGROUND-COLOR: #8dbdd8
+}
+.hint {
+	cursor: pointer;
+}
+
+.tooltip {
+	margin: 5px;
+	padding: 20px;
+	border-right:1px solid #808080;
+	border-bottom:1px solid #808080;
+	background-color: #D4D0C8;
+	background-image: url('images/bg_menu_slider.png');
+	position: absolute;
+	z-index: 2;
+}
+.welcome-text{
+	font-weight: 900;
+	color: #000;
+	font-size: 14px;
+	filter:DropShadow(Color=#000, OffX=1, OffY=1);
+}
+.home{
+	width:89px;
+	height:29px;
+	background-image: url('images/home.png');
+	font-size: 14px;
+	text-decoration:none;
+}
+.home:hover{
+	 background-image: url('images/home_hover.png');
+	 text-decoration:none;
+}
+.logout{
+	width:70px;
+	height:26px;
+	align:center;
+	background-image: url('images/logout.png');
+	font-weight: bold;
+	color: #fff;
+	font-size: 14px;
+	text-decoration:none;
+}
+.logout:hover{
+	 background-image: url('images/logout_hover.png');
+	 text-decoration:none;
+}
+.disabledButton {
+	padding-left: 5px;
+	padding-right: 5px;
+	background: url('images/groovybutton.png') repeat-x;
+	border: #147abc 1px solid;
+	text-align: center;
+    background-color: #A9A9A9;
+}

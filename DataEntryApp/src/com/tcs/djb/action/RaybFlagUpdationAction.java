@@ -1,0 +1,840 @@
+/************************************************************************************************************
+ * @(#) RaybFlagUpdationAction.java   29 Aug 2016
+ * 
+ *
+ *************************************************************************************************************/
+package com.tcs.djb.action;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.struts2.interceptor.ServletResponseAware;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.tcs.djb.constants.DJBConstants;
+import com.tcs.djb.dao.LoginDAO;
+import com.tcs.djb.dao.RainWaterHarvestingDAO;
+import com.tcs.djb.services.KNOValidationService;
+import com.tcs.djb.services.PremiseCharUpdateService;
+import com.tcs.djb.util.AppLog;
+import com.tcs.djb.util.PropertyUtil;
+import com.tcs.djb.util.UcmDocUploadUtil;
+import com.tcs.djb.validator.ScreenAccessValidator;
+
+/**
+ * <p>
+ * Action class for Rocky area & On banks of Yamuna flag Updation Screen. JTrac
+ * ID: DJB-4537, Open project ID#1442
+ * </p>
+ * 
+ * @author 682667(Rajib Hazarika)
+ * @since 29-AUG-2016
+ */
+@SuppressWarnings("deprecation")
+public class RaybFlagUpdationAction extends ActionSupport implements
+		ServletResponseAware {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * Variable to store approved by details of the Tagging Details
+	 */
+	private String approvedBy;
+	/**
+	 * Variable to store comments input from approver
+	 */
+	private String comments;
+	// private String currentRainwaterHarvestingFlagInSystem;
+	private String currentRWHF;
+	private String currentWWHF;
+	/**
+	 * Variable to store Customer Class of the kno
+	 */
+	String custClassCode = "";
+
+	private String diaryDate;
+
+	private String diaryNo;
+
+	// private String docNo;
+	private String documentNo;
+
+	private File documentOfProof;
+
+	private String documentOfProofContentType;
+
+	private String documentOfProofFileName;
+
+	private String documentProofFilePath;
+	/**
+	 * Hidden action.
+	 */
+	private String hidAction;
+
+	/**
+	 * InputStream used for AJax call.
+	 */
+	private InputStream inputStream;
+
+	private String isRainWaterHarvestInstalled;
+
+	private String isWasteWaterTreatmentInstalled;
+	private String kno;
+
+	// private String nameOfConsumer;
+	private String nameOfConsumer;
+
+	/**
+	 * Variable to store password entered by user on Re-Confirm Passsword Screen
+	 * 
+	 */
+	private String password;
+
+	private String photocopy;
+
+	private HttpServletResponse response;
+
+	// private String rainWaterHarvestInstallDate;
+	private String rwhImpdate;
+
+	/**
+	 * Variable to store UCM path
+	 */
+	String ucmPath = "";
+
+	/**
+	 * Variable to store UCM path for Rain Water
+	 */
+	String ucmPathRwh = "";
+
+	/**
+	 * Variable to store UCM path for Waste Water
+	 */
+	String ucmPathWwt = "";
+
+	private File wasteWaterdocumentOfProof;
+
+	private String wwhImpdate;
+
+	/**
+	 * <p>
+	 * For all ajax call in Rocky area & On banks of Yamuna flag Updation
+	 * Screen.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public String ajaxMethod() {
+		AppLog.begin();
+		try {
+			// System.out.println(">>>>>>>>>>ajaxMethod>>>>>>>>>>");
+			Map<String, Object> session = ActionContext.getContext()
+					.getSession();
+			String userId = (String) session.get("userId");
+			AppLog.info("Inside Action Class:" + "::userId:" + userId);
+			if (null == userId || "".equals(userId)) {
+				addActionError(getText("error.login.expired"));
+				inputStream = new StringBufferInputStream("ERROR:"
+						+ getText("error.login.expired")
+						+ ", Please re login  and try Again!");
+				AppLog.end();
+				return "login";
+			}
+			if ("checkKNO".equalsIgnoreCase(hidAction)) {
+				int chkAccess = 0;
+				Map<String, String> knoDetails = null;
+				StringBuffer responseSB = new StringBuffer();
+				if (null != kno && !"".equalsIgnoreCase(kno)) {
+					// Calling KNO validation Service for validating KNO
+					String isValidKNO = KNOValidationService.validateKNO(kno);
+					AppLog.info("response::" + isValidKNO);
+					if ("VALID".equalsIgnoreCase(isValidKNO)) {
+
+						chkAccess = RainWaterHarvestingDAO.getAccesCount(kno,
+								userId.trim());
+						AppLog.info("chkAccess::" + chkAccess);
+						if (chkAccess > 0) {
+							knoDetails = RainWaterHarvestingDAO
+									.getKnoDetailsForRaybFlag(kno);
+							if (null != knoDetails) {
+								AppLog.info(">>>knoDetails is not null");
+								responseSB.append("<CONSNAME>"
+										+ knoDetails.get("CONSNAME")
+										+ "</CONSNAME>");
+								responseSB.append("<RAYB_STATUS>"
+										+ knoDetails.get("RAYB_STATUS")
+										+ "</RAYB_STATUS>");
+							} else {
+								AppLog.info(">>>knoDetails is not null");
+								responseSB
+										.append("<ERROR> There is some problem in fetching KNO details, please contact System Administrator</ERROR>");
+							}
+						} else {
+							AppLog.info(">>>kno not Valid");
+							responseSB
+									.append("<ERROR> You do not have sufficient priviledge to the KNO </ERROR>");
+							responseSB.append("<KNOSTATUS>VALID</KNOSTATUS>");
+						}
+					} else {
+						if ("INVALID".equalsIgnoreCase(isValidKNO)) {
+							AppLog.info("<ERROR> KNO is not Valid </ERROR>");
+							responseSB
+									.append("<ERROR> KNO is not Valid </ERROR>");
+						} else {
+							AppLog
+									.info(">><ERROR> There is something unexpected happens during request processing, Please Try Again  </ERROR>>>");
+							responseSB
+									.append("<ERROR> There is something unexpected happens during request processing, Please Try Again  </ERROR>");
+						}
+					}
+				}
+
+				inputStream = new StringBufferInputStream(responseSB.toString());
+				AppLog.end();
+				return "success";
+			} else {
+				// START: Added by Rajib as per JTrac DJB-4037 on 20-OCT-2015
+				if ("reConfirmPassword".equalsIgnoreCase(hidAction)) {
+					AppLog.info(">>inside reConfirmpassword hidAction>>");
+					if (null != password && !"".equalsIgnoreCase(password)) {
+						String userName = (String) session.get("userId");
+						String userRole = (String) session.get("userType");
+						StringBuffer responseSB = new StringBuffer();
+						HashMap<String, String> inputMap = new HashMap<String, String>();
+						HashMap<String, String> returnMap = null;
+						inputMap.put("userId", userName);
+						inputMap.put("password", password);
+						inputMap.put("userRole", userRole);
+						AppLog.info("userName>>" + userName
+								+ ">>password >> not null>>userRole>>"
+								+ userRole);
+						returnMap = (HashMap<String, String>) LoginDAO
+								.validateLogin(inputMap);
+						if (null != returnMap) {
+							String status = (String) returnMap.get("status");
+							if (null != status
+									&& "Success".equalsIgnoreCase(status)) {
+								AppLog.info(">>status>>" + status);
+								responseSB.append("SUCCESS");
+								inputStream = new StringBufferInputStream(
+										responseSB.toString());
+								AppLog.end();
+								return "success";
+
+							} else {
+								responseSB.append("INVALID");
+								inputStream = new StringBufferInputStream(
+										responseSB.toString());
+								AppLog.end();
+								return "success";
+							}
+
+						}
+					} else {
+						inputStream = new StringBufferInputStream("INVALID");
+						AppLog.end();
+						return "success";
+					}
+				}
+				// END: Added by Rajib as per JTrac DJB-4037 on 20-OCT-2015
+				inputStream = new StringBufferInputStream("INVALID");
+				AppLog.end();
+				return "success";
+			}
+		} catch (Exception e) {
+			inputStream = new StringBufferInputStream(
+					"ERROR:Rain Water Harvesting Details for " + kno
+							+ " Could not be Saved Successfully.");
+			AppLog.error(e);
+		}
+		AppLog.end();
+		return SUCCESS;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.opensymphony.xwork2.ActionSupport#execute()
+	 */
+	public String execute() {
+		try {
+			String userName = null;
+			Map<String, Object> session = ActionContext.getContext()
+					.getSession();
+			if (null != session) {
+				userName = (String) session.get("userId");
+				if (null == userName || "".equals(userName)) {
+					addActionError(getText("error.login.expired"));
+					AppLog.end();
+					return "login";
+				}
+			}
+			session.remove("SERVER_MSG");
+			AppLog.info(">>>>>>>>>>executeMethod>>>>>>>>>>" + hidAction
+					+ ">>kno>>" + kno);
+			if ("processRequest".equalsIgnoreCase(hidAction)) {
+				session.put("isPopUp", false); // Added by Rajib for popup of
+				// Re-Confirm Password Page
+				int rowsInserted = 0;
+				rowsInserted = RainWaterHarvestingDAO.insertRaybCharDetails(
+						kno, isRainWaterHarvestInstalled, rwhImpdate,
+						documentNo, userName, userName,
+						DJBConstants.INITIAL_STATUS_FLG_RWH);
+				AppLog.info("rowsInserted" + rowsInserted);
+				if (rowsInserted > 0) {
+					ucmUpload(
+							"photocopy_of_RAYBFlagUpdation_",
+							documentOfProof,
+							documentOfProofFileName,
+							documentProofFilePath,
+							documentNo,
+							documentOfProofContentType,
+							"Photocopy of Rocky Area/Banks of Yamuna Flag Updation",
+							DJBConstants.DOC_TYPE_RWH);
+					ucmPathRwh = ucmPath;
+					AppLog.info("ucmPathRwh::" + ucmPathRwh);
+					AppLog.info("kno::" + kno);
+					AppLog.info("RWHDate::" + rwhImpdate);
+					AppLog.info("approvedBy::" + approvedBy);
+					AppLog.info("isRainWaterHarvestInstalled::"
+							+ isRainWaterHarvestInstalled);
+					AppLog.info("Diary No::" + diaryNo);
+					AppLog.info("Document No::" + documentNo);
+					String premiseId = null;
+					premiseId = RainWaterHarvestingDAO.getPremiseId(kno);
+					AppLog.info("premiseId::" + premiseId);
+					String authCookie = null;
+					if (null != session && null != session.get("CCB_CRED")) {
+						authCookie = (String) session.get("CCB_CRED");
+					} else {
+						addActionError(getText("error.access.denied"));
+						inputStream = ScreenAccessValidator
+								.ajaxResponse(getText("error.access.denied"));
+						AppLog.end();
+						return "success";
+					}
+					if (DJBConstants.DYNAMIC_AUTH_COOKIE_FOR_RAYB
+							.equalsIgnoreCase(DJBConstants.FLAG_N)) {
+						authCookie = null;
+						// If CCB service call willnot be invoked from logged in
+						// user id, then it will be envoked using WEB user
+						// credentials
+					}
+					String status = PremiseCharUpdateService
+							.updateRaybPremiseCharacteristics(premiseId,
+									isRainWaterHarvestInstalled, userName,
+									ucmPathRwh, rwhImpdate, authCookie);
+					if ("SUCCESS".equals(status)) {
+						session.put("SERVER_MSG", "Successfully Saved");
+						int rowsUpdated = 0;
+						rowsUpdated = RainWaterHarvestingDAO
+								.updatePremCharStatus(
+										DJBConstants.SUCCESS_STATUS_FLG_RWH,
+										userName, kno,
+										DJBConstants.INITIAL_STATUS_FLG_RWH);
+						if (rowsUpdated > 0) {
+							AppLog
+									.info("rowsUpdated>>"
+											+ rowsUpdated
+											+ ">> Success Status 30 Updated in Staging table>>");
+						} else {
+							AppLog
+									.info("rowsUpdated>>"
+											+ rowsUpdated
+											+ ">> Status could not be Updated in Staging table>>");
+						}
+						session.put("SERVER_MSG", "Details Saved Successfully");
+
+					} else {
+						session.put("SERVER_MSG",
+								"Could not Saved Successfully");
+					}
+				} else {
+					// can't insert Prem Char details into staging table
+					session.put("SERVER_MSG", "Could not Saved Successfully");
+				}
+			}
+		} catch (Exception e) {
+			AppLog.error(e);
+		} finally {
+			ucmPath = null;
+			ucmPathWwt = null;
+			custClassCode = null;
+			comments = null;
+			approvedBy = null;
+			currentRWHF = null;
+			documentNo = null;
+			diaryNo = null;
+			wasteWaterdocumentOfProof = null;
+			documentOfProof = null;
+			documentOfProofContentType = null;
+			documentOfProofFileName = null;
+			documentProofFilePath = null;
+			hidAction = null;
+			isRainWaterHarvestInstalled = null;
+			inputStream = null;
+			isWasteWaterTreatmentInstalled = null;
+			kno = null;
+			currentWWHF = null;
+			wwhImpdate = null;
+		}
+		AppLog.end();
+		return SUCCESS;
+
+	}
+
+	/**
+	 * @return the approvedBy
+	 */
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * @return the currentRWHF
+	 */
+	public String getCurrentRWHF() {
+		return currentRWHF;
+	}
+
+	/**
+	 * @return the currentWWHF
+	 */
+	public String getCurrentWWHF() {
+		return currentWWHF;
+	}
+
+	/**
+	 * @return the diaryDate
+	 */
+	public String getDiaryDate() {
+		return diaryDate;
+	}
+
+	/**
+	 * @return the diaryNo
+	 */
+	public String getDiaryNo() {
+		return diaryNo;
+	}
+
+	/**
+	 * @return the documentNo
+	 */
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	/**
+	 * @return the documentOfProof
+	 */
+	public File getDocumentOfProof() {
+		return documentOfProof;
+	}
+
+	/**
+	 * @return the documentOfProofContentType
+	 */
+	public String getDocumentOfProofContentType() {
+		return documentOfProofContentType;
+	}
+
+	/**
+	 * @return the documentOfProofFileName
+	 */
+	public String getDocumentOfProofFileName() {
+		return documentOfProofFileName;
+	}
+
+	/**
+	 * @return the hidAction
+	 */
+	public String getHidAction() {
+		return hidAction;
+	}
+
+	/**
+	 * @return the inputStream
+	 */
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+
+	/**
+	 * @return the isRainWaterHarvestInstalled
+	 */
+	public String getIsRainWaterHarvestInstalled() {
+		return isRainWaterHarvestInstalled;
+	}
+
+	/**
+	 * @return the isWasteWaterTreatmentInstalled
+	 */
+	public String getIsWasteWaterTreatmentInstalled() {
+		return isWasteWaterTreatmentInstalled;
+	}
+
+	/**
+	 * @return the kno
+	 */
+	public String getKno() {
+		return kno;
+	}
+
+	/**
+	 * @return the nameOfConsumer
+	 */
+	public String getNameOfConsumer() {
+		return nameOfConsumer;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @return the photocopy
+	 */
+	public String getPhotocopy() {
+		return photocopy;
+	}
+
+	/**
+	 * @return the response
+	 */
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	/**
+	 * @return the rwhImpdate
+	 */
+	public String getRwhImpdate() {
+		return rwhImpdate;
+	}
+
+	/**
+	 * @return the wasteWaterdocumentOfProof
+	 */
+	public File getWasteWaterdocumentOfProof() {
+		return wasteWaterdocumentOfProof;
+	}
+
+	/**
+	 * @return the wwhImpdate
+	 */
+	public String getWwhImpdate() {
+		return wwhImpdate;
+	}
+
+	/**
+	 * @param approvedBy
+	 *            the approvedBy to set
+	 */
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	/**
+	 * @param currentRWHF
+	 *            the currentRWHF to set
+	 */
+	public void setCurrentRWHF(String currentRWHF) {
+		this.currentRWHF = currentRWHF;
+	}
+
+	/**
+	 * @param currentWWHF
+	 *            the currentWWHF to set
+	 */
+	public void setCurrentWWHF(String currentWWHF) {
+		this.currentWWHF = currentWWHF;
+	}
+
+	/**
+	 * @param diaryDate
+	 *            the diaryDate to set
+	 */
+	public void setDiaryDate(String diaryDate) {
+		this.diaryDate = diaryDate;
+	}
+
+	/**
+	 * @param diaryNo
+	 *            the diaryNo to set
+	 */
+	public void setDiaryNo(String diaryNo) {
+		this.diaryNo = diaryNo;
+	}
+
+	/**
+	 * @param documentNo
+	 *            the documentNo to set
+	 */
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	// /**
+	// * @return the commentsOfuser
+	// */
+	// public String getCommentsOfuser() {
+	// return commentsOfuser;
+	// }
+
+	// /**
+	// * @return the currentRainwaterHarvestingFlagInSystem
+	// */
+	// public String getCurrentRainwaterHarvestingFlagInSystem() {
+	// return currentRainwaterHarvestingFlagInSystem;
+	// }
+
+	// /**
+	// * @return the docNo
+	// */
+	// public String getDocNo() {
+	// return docNo;
+	// }
+
+	/**
+	 * @param documentOfProof
+	 *            the documentOfProof to set
+	 */
+	public void setDocumentOfProof(File documentOfProof) {
+		this.documentOfProof = documentOfProof;
+	}
+
+	/*
+	 * public String getDocumentProofFilePath() { return documentProofFilePath;
+	 * }
+	 */
+
+	/**
+	 * @param documentOfProofContentType
+	 *            the documentOfProofContentType to set
+	 */
+	public void setDocumentOfProofContentType(String documentOfProofContentType) {
+		this.documentOfProofContentType = documentOfProofContentType;
+	}
+
+	/**
+	 * @param documentOfProofFileName
+	 *            the documentOfProofFileName to set
+	 */
+	public void setDocumentOfProofFileName(String documentOfProofFileName) {
+		this.documentOfProofFileName = documentOfProofFileName;
+	}
+
+	/**
+	 * @param hidAction
+	 *            the hidAction to set
+	 */
+	public void setHidAction(String hidAction) {
+		this.hidAction = hidAction;
+	}
+
+	/**
+	 * @param inputStream
+	 *            the inputStream to set
+	 */
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
+
+	/**
+	 * @param isRainWaterHarvestInstalled
+	 *            the isRainWaterHarvestInstalled to set
+	 */
+	public void setIsRainWaterHarvestInstalled(
+			String isRainWaterHarvestInstalled) {
+		this.isRainWaterHarvestInstalled = isRainWaterHarvestInstalled;
+	}
+
+	/**
+	 * @param isWasteWaterTreatmentInstalled
+	 *            the isWasteWaterTreatmentInstalled to set
+	 */
+	public void setIsWasteWaterTreatmentInstalled(
+			String isWasteWaterTreatmentInstalled) {
+		this.isWasteWaterTreatmentInstalled = isWasteWaterTreatmentInstalled;
+	}
+
+	/**
+	 * @param kno
+	 *            the kno to set
+	 */
+	public void setKno(String kno) {
+		this.kno = kno;
+	}
+
+	/**
+	 * @param nameOfConsumer
+	 *            the nameOfConsumer to set
+	 */
+	public void setNameOfConsumer(String nameOfConsumer) {
+		this.nameOfConsumer = nameOfConsumer;
+	}
+
+	/*
+	 * public void setDocumentProofFilePath(String documentProofFilePath) {
+	 * this.documentProofFilePath = documentProofFilePath; }
+	 */
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @param response
+	 *            the response to set
+	 */
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+
+	/**
+	 * @param rwhImpdate
+	 *            the rwhImpdate to set
+	 */
+	public void setRwhImpdate(String rwhImpdate) {
+		this.rwhImpdate = rwhImpdate;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.struts2.interceptor.ServletResponseAware#setServletResponse(javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	public void setServletResponse(HttpServletResponse response) {
+		this.response = response;
+
+	}
+
+	/**
+	 * @param wasteWaterdocumentOfProof
+	 *            the wasteWaterdocumentOfProof to set
+	 */
+	public void setWasteWaterdocumentOfProof(File wasteWaterdocumentOfProof) {
+		this.wasteWaterdocumentOfProof = wasteWaterdocumentOfProof;
+	}
+
+	/**
+	 * @param wwhImpdate
+	 *            the wwhImpdate to set
+	 */
+	public void setWwhImpdate(String wwhImpdate) {
+		this.wwhImpdate = wwhImpdate;
+	}
+
+	/**
+	 * <p>
+	 * This method is used to upload document in UCM. Jtrac DJB-4037
+	 * </p>
+	 * 
+	 * @param fileName
+	 * @param docProof
+	 * @param docProofFileName
+	 * @param docProofFilePath
+	 * @param docNo
+	 * @param docProofContentTyp
+	 * @param docTitle
+	 * @param typeOfDocument
+	 * @return
+	 * @throws Exception
+	 */
+	public String ucmUpload(String fileName, File docProof,
+			String docProofFileName, String docProofFilePath, String docNo,
+			String docProofContentTyp, String docTitle, String typeOfDocument)
+			throws Exception {
+		String Success = null;
+		try {
+			if (null != DJBConstants.UCM_UPLOAD
+					&& !"".equals(DJBConstants.UCM_UPLOAD.trim())) {
+				String TMP_DIR_PATH = PropertyUtil
+						.getProperty("UCMdocumentUpload");
+				AppLog.info("TMP_DIR_PATH::" + TMP_DIR_PATH);
+				System.out
+						.println("documentOfProof>>" + docProof
+								+ ">>documentOfProofFileName>>"
+								+ docProofFileName
+								+ ">>documentOfProofContentType>>"
+								+ docProofContentTyp);
+
+				AppLog
+						.info("documentOfProof::" + docProof
+								+ ">>documentOfProofFileName>>"
+								+ docProofFileName
+								+ ">>documentOfProofContentType>>"
+								+ docProofContentTyp);
+
+				String temFileName = fileName
+						+ kno
+						+ docProofFileName.substring(docProofFileName
+								.indexOf('.'));
+				AppLog.info(">>temFileName>>"+temFileName);
+				File fileToCreate = new File(docProofFilePath, temFileName);
+
+				FileUtils.copyFile(docProof, fileToCreate);
+				HashMap<String, String> Contents = null;
+				UcmDocUploadUtil ucmDocUploadUtil = new UcmDocUploadUtil();
+				Contents = new HashMap<String, String>();
+				String msgPath = "NA";
+				Contents.put("Kno", kno);
+
+				/******** File Parsing... ************/
+
+				Contents.put("dDocTitle", docTitle);// Take
+				// from
+				// constant
+				// file
+				// via
+				// property file
+				Contents.put("xTypeOfDocument", typeOfDocument);
+				Contents.put("DocumentNo", docNo);
+				File op;
+				try {
+					op = ucmDocUploadUtil.checkInContent(docProof.toString(),
+							Contents, temFileName);
+					msgPath = UcmDocUploadUtil.readFileParse(op);
+					ucmPath = UcmDocUploadUtil.ucmPathParse(msgPath);
+					AppLog.info("msgPath>>>" + msgPath + ">>>ucmPath>>>"
+							+ ucmPath);
+				} catch (Exception e) {
+					AppLog.error(e);
+
+				}
+			}
+			if (null != docProofFilePath) {
+				Success = docProofFilePath;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Success;
+
+	}
+
+}
